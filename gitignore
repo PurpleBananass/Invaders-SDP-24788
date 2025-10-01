@@ -166,5 +166,16 @@ pip-log.txt
 ## Custom
 #############
 
-log*ß
+log*
+#*.ttf
 .checkstyle
+
+#############
+## IntelliJ
+#############
+out/
+.idea/
+*.log
+
+# team iml files
+*.iml
