@@ -147,6 +147,7 @@ public final class DrawManager {
             spriteMap.put(SpriteType.EnemyShipC2, new boolean[12][8]);
             spriteMap.put(SpriteType.EnemyShipSpecial, new boolean[16][7]);
             spriteMap.put(SpriteType.Explosion, new boolean[13][7]);
+            spriteMap.put(SpriteType.Heart, new boolean[11][10]);
 
             // Item sprite placeholder
             spriteMap.put(SpriteType.ItemScore, new boolean[5][5]);
@@ -535,10 +536,31 @@ public final class DrawManager {
     public void drawLives(final Screen screen, final int lives) {
         backBufferGraphics.setFont(fontRegular);
         backBufferGraphics.setColor(Color.WHITE);
-        backBufferGraphics.drawString(Integer.toString(lives), 20, 25);
-        Ship dummyShip = new Ship(0, 0, null, null, null);
-        for (int i = 0; i < lives; i++)
-            drawEntity(dummyShip, 40 + 35 * i, 10);
+
+
+        Entity heart = new Entity(0, 0, 11*2, 10*2, Color.RED) {
+            { this.spriteType = SpriteType.Heart; }
+        };
+
+        if (isCoop) {
+            backBufferGraphics.drawString(Integer.toString(lives), 20, 25);
+            for (int i = 0; i < lives; i++) {
+                if (i < 3) {
+
+                    drawEntity(heart, 40 + 35 * i, 9);
+                } else {
+
+                    drawEntity(heart, 40 + 35 * (i - 3), 9 + 25);
+                }
+            }
+        }
+        else {
+            backBufferGraphics.drawString(Integer.toString(lives), 20, 40);
+            for (int i = 0; i<lives; i++) {
+                drawEntity(heart, 40 + 35 * i, 23);
+            }
+        }
+
     }
 
     /**
