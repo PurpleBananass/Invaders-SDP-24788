@@ -134,10 +134,9 @@ public class ItemEffect {
         if (gameState == null) return false;
         final int cost = (overrideCost != null) ? overrideCost : COST_TRIPLESHOT;
 
-        //아이템 사용 비용 지불 욥션 필요 없어서 잠시 주석처리 해둡니다.
-//        if (!trySpendCoins(gameState, playerId, cost)) {
-//            return false;
-//        }
+        if (!trySpendCoins(gameState, playerId, cost)) {
+            return false;
+        }
         int playerIndex = getPlayerIndex(playerId);
 
         // apply duration
