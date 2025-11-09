@@ -1,0 +1,23 @@
+// settings.gradle
+
+// 1. Gradle이 플러그인(id 'java', 'jacoco' 등)을 어디서 찾을지 설정
+pluginManagement {
+    repositories {
+        // Gradle 공식 플러그인 저장소 (필수)
+        gradlePluginPortal()
+    }
+}
+
+// 2. Gradle이 라이브러리(JUnit, Mockito 등)를 어디서 찾을지 설정
+dependencyResolutionManagement {
+    // 이 프로젝트에 정의된 저장소만 사용하도록 강제 (Best Practice)
+    repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
+
+    repositories {
+        // Java 라이브러리(JUnit, Mockito 등)의 중앙 저장소 (필수)
+        mavenCentral()
+    }
+}
+
+// 3. 프로젝트 이름 (필수)
+rootProject.name = "NullNull"
