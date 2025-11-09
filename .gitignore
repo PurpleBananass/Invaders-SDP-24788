@@ -177,3 +177,5 @@ log*
 *.iml
 *.class
 /out/
+/.gradle/
+/build/
