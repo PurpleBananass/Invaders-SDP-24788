@@ -1,0 +1,113 @@
+plugins {
+    // [언어/빌드]
+    id 'java'
+    id 'jacoco' // JaCoCo 리포트 생성용
+
+    // [SonarCloud 연동]
+    id 'org.sonarqube' version '7.0.1.6134'
+}
+
+group = 'org.nullnull'
+version = '1.0-SNAPSHOT'
+
+repositories { mavenCentral() }
+
+java {
+    toolchain { languageVersion = JavaLanguageVersion.of(21) }
+}
+
+dependencies {
+    // 테스트 프레임워크
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.4'
+    testRuntimeOnly  'org.junit.jupiter:junit-jupiter-engine:5.11.4'
+
+    // 목킹
+    testImplementation 'org.mockito:mockito-core:5.13.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.13.0'
+
+    // JUnit Platform Launcher
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.2'
+
+    // 구현 라이브러리는 필요 시 추가
+    // implementation '...'
+
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']  // '진짜 코드'는 src 폴더에 있음
+        }
+        resources {
+            srcDirs = ['res']  // '리소스'는 res 폴더에 있음
+        }
+    }
+    test {
+        java {
+            srcDirs = ['test'] // '시험지'는 test 폴더에 있음
+        }
+    }
+}
+
+tasks.test {
+    useJUnitPlatform()
+    // 테스트 후 자동으로 커버리지 리포트 생성
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+jacoco {
+    // 필요 시 버전 고정 (옵션)
+    // toolVersion = '0.8.11'
+}
+
+tasks.jacocoTestReport {
+    // (중복 안전) 테스트 이후 실행
+    dependsOn(tasks.test)
+    reports {
+        xml.required.set(true)   // SonarCloud가 이 XML을 읽음 (필수)
+        html.required.set(true)  // 로컬 확인용 (옵션)
+        csv.required.set(false)
+    }
+
+    // (옵션) 커버리지에서 제외할 경로가 있으면 여기서 관리
+    // def coverageExcludes = ['**/ui/**', '**/screen/**']
+    // doFirst {
+    //     classDirectories.setFrom(
+    //         files(classDirectories.files.collect { dir ->
+    //             fileTree(dir: dir, exclude: coverageExcludes)
+    //         })
+    //     )
+    // }
+}
+
+/**
+ * 커버리지 '강제 실패' 게이트는 JaCoCo에서 하지 않음.
+ * => 모든 품질 기준은 SonarCloud Quality Gate로만 관리.
+ * (jacocoTestCoverageVerification 블록 없음)
+ */
+
+sonarqube {
+    properties {
+        property "sonar.sources", "src"
+        property "sonar.tests", "test"
+        property "sonar.java.binaries", "$buildDir/classes/java/main"
+
+        property "sonar.projectKey", "doorimng_NullNull"
+        property "sonar.organization", "doorimng"
+        property "sonar.host.url", "https://sonarcloud.io"
+
+        property "sonar.coverage.jacoco.xmlReportPaths",
+                "$buildDir/reports/jacoco/test/jacocoTestReport.xml"
+
+        // (권장) 소스 인코딩 지정
+        property "sonar.sourceEncoding", "UTF-8"
+
+        // (옵션) UI/화면 전용 코드 제외
+        // property "sonar.coverage.exclusions", "**/ui/**, **/screen/**"
+
+        if (System.getenv("CI") == "true") {
+            property "sonar.qualitygate.wait", true
+        }
+    }
+}
+
