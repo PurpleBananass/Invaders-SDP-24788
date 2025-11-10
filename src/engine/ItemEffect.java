@@ -134,10 +134,15 @@ public class ItemEffect {
         if (gameState == null) return false;
         final int cost = (overrideCost != null) ? overrideCost : COST_TRIPLESHOT;
 
-        if (!trySpendCoins(gameState, playerId, cost)) {
+        //아이템 사용 비용 지불 욥션 필요 없어서 잠시 주석처리 해둡니다.
+//        if (!trySpendCoins(gameState, playerId, cost)) {
+//            return false;
+//        }
+
+        int playerIndex = getPlayerIndex(playerId);
+        if (gameState.hasActiveDurationItem(playerIndex)) {
             return false;
         }
-        int playerIndex = getPlayerIndex(playerId);
 
         // apply duration
         gameState.addEffect(playerIndex, ItemEffectType.TRIPLESHOT, effectValue, duration);
@@ -199,4 +204,16 @@ public class ItemEffect {
     private static int getPlayerIndex(final int playerId) {
         return (playerId == 2) ? 1 : 0;
     }
+
+    /**
+     * @return 아이템이 잘 사용되었는지 여부를 반환합니다.
+     * */
+    public static boolean useItem(final GameState gameState, final int playerId, int effectValue) {
+
+        // 사용 여부를 반환해주세요.
+        int playerIndex = getPlayerIndex(playerId) ;
+        if ( gameState.hasActiveDurationItem(playerIndex) ) return true ;
+        else return false  ;
+    }
+
 }
