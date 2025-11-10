@@ -14,6 +14,6 @@ public class MapScreen {
     }
 
     public void changeScreen() {
-        if ( isClickedExit() ) gameState
+        //if ( isClickedExit() ) gameState
     }
 }
