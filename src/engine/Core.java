@@ -158,7 +158,7 @@ public final class Core {
                             + " setting screen at " + FPS + " fps.");
                     returnCode = frame.setScreen(currentScreen);
                     LOGGER.info("Closing setting screen.");
-                    getAVoid();
+                    frame.removeKeyListener(InputManager.getInstance());
                     frame.addKeyListener(InputManager.getInstance()); // Remove and re-register the input manager, forcing the key setting of the frame to be updated
                     break;
 
@@ -222,10 +222,6 @@ public final class Core {
         fileHandler.flush();
         fileHandler.close();
         System.exit(0);
-    }
-
-    private static void getAVoid() {
-        frame.removeKeyListener(InputManager.getInstance());
     }
 
     /**
