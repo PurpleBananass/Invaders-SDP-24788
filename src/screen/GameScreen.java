@@ -457,6 +457,9 @@ public class GameScreen extends Screen {
 //        }
         drawManager.drawLevel(this, this.state.getLevel());
 		drawManager.drawHorizontalLine(this, SEPARATION_LINE_HEIGHT - 1);
+        if (state.isCoop()) {
+            drawManager.drawCoopDivider(this, this.width / 2, SEPARATION_LINE_HEIGHT);
+        }
         drawManager.drawShipCount(this, enemyShipFormation.getShipCount());
 
 		if (!this.inputDelay.checkFinished()) {
