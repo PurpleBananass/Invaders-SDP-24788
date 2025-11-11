@@ -89,31 +89,15 @@ sonarqube {
         property "sonar.organization", "doorimng"
         property "sonar.host.url", "https://sonarcloud.io"
 
-        // JaCoCo XML 경로
         property "sonar.coverage.jacoco.xmlReportPaths",
                 "$buildDir/reports/jacoco/test/jacocoTestReport.xml"
 
-        // 소스 인코딩
         property "sonar.sourceEncoding", "UTF-8"
 
-        // ✅ 커버리지에서만 제외(분석은 유지)
-        // - screen 전반: 화면/루프 의존
-        // - engine Core: 엔진 허브/런타임 의존
-        // - I/O 및 렌더 래퍼(있을 경우): Draw/Input/Sound/Renderer/Sprite
-        // - 런처/메인, 설정 디렉토리
+        // ✅ 한 줄로! (문자열 연결/줄바꿈 제거)
         property "sonar.coverage.exclusions",
-                "**/screen/**, " +
-                        "**/engine/Core*.java, " +
-                        "**/*DrawManager*.java, " +
-                        "**/*Renderer*.java, " +
-                        "**/*InputManager*.java, " +
-                        "**/*SoundManager*.java, " +
-                        "**/*Sprite*.java, " +
-                        "**/*Main.java, " +
-                        "**/*Launcher*.java, " +
-                        "**/config/**"
+                "**/screen/**,**/engine/Core*.java,**/*DrawManager*.java,**/*Renderer*.java,**/*InputManager*.java,**/*SoundManager*.java,**/*Sprite*.java,**/*Main.java,**/*Launcher*.java,**/config/**"
 
-        // CI에서 품질게이트 결과 기다림
         if (System.getenv("CI") == "true") {
             property "sonar.qualitygate.wait", true
         }
