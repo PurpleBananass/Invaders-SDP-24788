@@ -30,22 +30,15 @@ dependencies {
 
     // 구현 라이브러리는 필요 시 추가
     // implementation '...'
-
 }
 
 sourceSets {
     main {
-        java {
-            srcDirs = ['src']  // '진짜 코드'는 src 폴더에 있음
-        }
-        resources {
-            srcDirs = ['res']  // '리소스'는 res 폴더에 있음
-        }
+        java { srcDirs = ['src'] }    // '진짜 코드'는 src 폴더
+        resources { srcDirs = ['res'] }
     }
     test {
-        java {
-            srcDirs = ['test'] // '시험지'는 test 폴더에 있음
-        }
+        java { srcDirs = ['test'] }   // '시험지'는 test 폴더
     }
 }
 
@@ -69,7 +62,8 @@ tasks.jacocoTestReport {
         csv.required.set(false)
     }
 
-    // (옵션) 커버리지에서 제외할 경로가 있으면 여기서 관리
+    // ⚠️ 커버리지 "계산에서만 제외" 목적이면, 아래 exclude는 사용하지 마세요.
+    // JaCoCo 리포트에서 아예 빠지게 되므로 리포트 母수 자체가 달라집니다.
     // def coverageExcludes = ['**/ui/**', '**/screen/**']
     // doFirst {
     //     classDirectories.setFrom(
@@ -83,7 +77,6 @@ tasks.jacocoTestReport {
 /**
  * 커버리지 '강제 실패' 게이트는 JaCoCo에서 하지 않음.
  * => 모든 품질 기준은 SonarCloud Quality Gate로만 관리.
- * (jacocoTestCoverageVerification 블록 없음)
  */
 
 sonarqube {
@@ -96,18 +89,33 @@ sonarqube {
         property "sonar.organization", "doorimng"
         property "sonar.host.url", "https://sonarcloud.io"
 
+        // JaCoCo XML 경로
         property "sonar.coverage.jacoco.xmlReportPaths",
                 "$buildDir/reports/jacoco/test/jacocoTestReport.xml"
 
-        // (권장) 소스 인코딩 지정
+        // 소스 인코딩
         property "sonar.sourceEncoding", "UTF-8"
 
-        // (옵션) UI/화면 전용 코드 제외
-        // property "sonar.coverage.exclusions", "**/ui/**, **/screen/**"
+        // ✅ 커버리지에서만 제외(분석은 유지)
+        // - screen 전반: 화면/루프 의존
+        // - engine Core: 엔진 허브/런타임 의존
+        // - I/O 및 렌더 래퍼(있을 경우): Draw/Input/Sound/Renderer/Sprite
+        // - 런처/메인, 설정 디렉토리
+        property "sonar.coverage.exclusions",
+                "**/screen/**, " +
+                        "**/engine/Core*.java, " +
+                        "**/*DrawManager*.java, " +
+                        "**/*Renderer*.java, " +
+                        "**/*InputManager*.java, " +
+                        "**/*SoundManager*.java, " +
+                        "**/*Sprite*.java, " +
+                        "**/*Main.java, " +
+                        "**/*Launcher*.java, " +
+                        "**/config/**"
 
+        // CI에서 품질게이트 결과 기다림
         if (System.getenv("CI") == "true") {
             property "sonar.qualitygate.wait", true
         }
     }
 }
-
