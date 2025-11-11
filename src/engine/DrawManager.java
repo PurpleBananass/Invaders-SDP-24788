@@ -617,6 +617,41 @@ public final class DrawManager {
                 positionY + 1);
     }
 
+    /**
+     * Draws the co-op playfield divider and subtle team tinting.
+     *
+     * @param screen   Screen to draw on.
+     * @param dividerX X coordinate of the divider line.
+     * @param startY   Top Y coordinate where the divider should begin.
+     */
+    public void drawCoopDivider(final Screen screen, final int dividerX, final int startY) {
+        if (!(backBufferGraphics instanceof Graphics2D)) {
+            backBufferGraphics.setColor(Color.WHITE);
+            backBufferGraphics.drawLine(dividerX, startY, dividerX, screen.getHeight());
+            return;
+        }
+
+        final Graphics2D g2d = (Graphics2D) backBufferGraphics;
+        final Composite originalComposite = g2d.getComposite();
+        final Stroke originalStroke = g2d.getStroke();
+
+        final int playfieldHeight = screen.getHeight() - startY;
+
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.08f));
+        g2d.setColor(new Color(64, 128, 255));
+        g2d.fillRect(0, startY, dividerX, playfieldHeight);
+
+        g2d.setColor(new Color(220, 72, 72));
+        g2d.fillRect(dividerX, startY, screen.getWidth() - dividerX, playfieldHeight);
+
+        g2d.setComposite(originalComposite);
+        g2d.setColor(new Color(255, 255, 255, 200));
+        g2d.setStroke(new BasicStroke(2f));
+        g2d.drawLine(dividerX, startY, dividerX, screen.getHeight());
+
+        g2d.setStroke(originalStroke);
+    }
+
     public void drawLevel (final Screen screen, final int level) {
         backBufferGraphics.setColor(Color.WHITE);
         String levelString = "Level " + level;
