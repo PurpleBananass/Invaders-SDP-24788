@@ -618,38 +618,46 @@ public final class DrawManager {
     }
 
     /**
-     * Draws the co-op playfield divider and subtle team tinting.
+     * Draws the co-op playfield divider as a thin white line (no background tint).
      *
-     * @param screen   Screen to draw on.
-     * @param dividerX X coordinate of the divider line.
-     * @param startY   Top Y coordinate where the divider should begin.
+     * @param screen     Screen to draw on.
+     * @param dividerX   X coordinate of the divider line.
+     * @param startY     Top Y coordinate where the divider should begin.
+     * @param lineWidth  Visual thickness in pixels (typically 2).
      */
-    public void drawCoopDivider(final Screen screen, final int dividerX, final int startY) {
+    public void drawCoopDivider(final Screen screen, final int dividerX, final int startY, final int lineWidth) {
         if (!(backBufferGraphics instanceof Graphics2D)) {
             backBufferGraphics.setColor(Color.WHITE);
-            backBufferGraphics.drawLine(dividerX, startY, dividerX, screen.getHeight());
+            int half = Math.max(0, lineWidth / 2);
+            for (int dx = -half; dx < -half + lineWidth; dx++) {
+                int x = dividerX + dx;
+                backBufferGraphics.drawLine(x, startY, x, screen.getHeight());
+            }
             return;
         }
 
-        final Graphics2D g2d = (Graphics2D) backBufferGraphics;
-        final Composite originalComposite = g2d.getComposite();
-        final Stroke originalStroke = g2d.getStroke();
+        Graphics2D g2d = (Graphics2D) backBufferGraphics;
+        Composite originalComposite = g2d.getComposite();
+        Paint originalPaint = g2d.getPaint();
 
-        final int playfieldHeight = screen.getHeight() - startY;
+        int playfieldHeight = screen.getHeight() - startY;
 
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.08f));
-        g2d.setColor(new Color(64, 128, 255));
+        g2d.setPaint(new Color(64, 128, 255));
         g2d.fillRect(0, startY, dividerX, playfieldHeight);
 
-        g2d.setColor(new Color(220, 72, 72));
+        g2d.setPaint(new Color(220, 72, 72));
         g2d.fillRect(dividerX, startY, screen.getWidth() - dividerX, playfieldHeight);
 
         g2d.setComposite(originalComposite);
-        g2d.setColor(new Color(255, 255, 255, 200));
-        g2d.setStroke(new BasicStroke(2f));
-        g2d.drawLine(dividerX, startY, dividerX, screen.getHeight());
+        g2d.setPaint(originalPaint);
 
-        g2d.setStroke(originalStroke);
+        g2d.setColor(Color.WHITE);
+        int half = Math.max(0, lineWidth / 2);
+        for (int dx = -half; dx < -half + lineWidth; dx++) {
+            int x = dividerX + dx;
+            g2d.drawLine(x, startY, x, screen.getHeight());
+        }
     }
 
     public void drawLevel (final Screen screen, final int level) {
