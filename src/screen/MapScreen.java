@@ -2,11 +2,10 @@ package screen;
 
 import engine.GameState ;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
 
 public class MapScreen extends Screen {
 
-    public static GameState gameState ;
+    static final GameState gameState = null;
 
     /**
      * Constructor, establishes the properties of the screen.
@@ -33,16 +32,17 @@ public class MapScreen extends Screen {
     }
 
     public void changeScreen() {
-        //if ( isClickedExit() ) gameState
+
     }
 
+    @Override
     public final int run() {
         super.run();
 
         return this.returnCode;
     }
 
-
+    @Override
     protected final void update() {
         super.update();
 
@@ -65,7 +65,7 @@ public class MapScreen extends Screen {
     private void draw() {
         drawManager.initDrawing(this);
         drawManager.drawMap(this, this.currentLevel);
-        drawManager.drawMapBackground(this);
+        drawManager.drawMapBackground();
         drawManager.completeDrawing(this);
     }
 

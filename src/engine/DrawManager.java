@@ -20,7 +20,6 @@ import java.util.logging.Logger;
 import Animations.BasicGameSpace;
 import Animations.Explosion;
 import Animations.MenuSpace;
-import com.sun.tools.javac.Main;
 import screen.Screen;
 import entity.Entity;
 import entity.Ship;
@@ -119,15 +118,15 @@ public final class DrawManager {
         ItemHeal,
         ItemTripleShot,
         ItemScoreBooster,
-        ItemBulletSpeedUp,
+        ITEM_BULLET_SPEEDUP,
 
         /** 레벨 나타내는 틀*/
-        LevelFrame,
+        LEVEL_FRAME,
 
         /** 행성 모양*/
-        Planet1,
-        Planet2,
-        Planet3
+        PLANET1,
+        PLANET2,
+        PLANET3
     };
 
     /**
@@ -167,13 +166,13 @@ public final class DrawManager {
             spriteMap.put(SpriteType.ItemHeal, new boolean[5][5]);
             spriteMap.put(SpriteType.ItemTripleShot, new boolean[5][7]);
             spriteMap.put(SpriteType.ItemScoreBooster, new boolean[5][5]);
-            spriteMap.put(SpriteType.ItemBulletSpeedUp, new boolean[5][5]);
+            spriteMap.put(SpriteType.ITEM_BULLET_SPEEDUP, new boolean[5][5]);
 
-            spriteMap.put(SpriteType.LevelFrame, new boolean[38][15]);
+            spriteMap.put(SpriteType.LEVEL_FRAME, new boolean[38][15]);
 
-            spriteMap.put(SpriteType.Planet1, new boolean[8][10]);
-            spriteMap.put(SpriteType.Planet2, new boolean[10][10]);
-            spriteMap.put(SpriteType.Planet3, new boolean[17][10]);
+            spriteMap.put(SpriteType.PLANET1, new boolean[8][10]);
+            spriteMap.put(SpriteType.PLANET2, new boolean[10][10]);
+            spriteMap.put(SpriteType.PLANET3, new boolean[17][10]);
 
             fileManager.loadSprite(spriteMap);
             logger.info("Finished loading the sprites.");
@@ -754,7 +753,7 @@ public final class DrawManager {
         String instructionsString = "Press Space to play, Escape to exit";
         int idx = 4; // idx를 변수로 받아와서 지정해줘야 합니다!!
 
-        drawExitButton(screen, selectedIndex == 2);
+        drawExitButton();
 
         backBufferGraphics.setColor(Color.GREEN);
         drawCenteredBigString(screen, titleString, screen.getHeight() / 6 + 10);
@@ -762,7 +761,7 @@ public final class DrawManager {
         drawMapHorizontalLine(screen, screen.getHeight() / 6 + 30);
 
         Entity levelFrame = new Entity(0, 0, 80*2 + 40, 16*2 + 8, Color.GRAY) {
-            { this.spriteType = SpriteType.LevelFrame ; }
+            { this.spriteType = SpriteType.LEVEL_FRAME; }
         } ;
 
         for ( int i = 0 ; i < items.length ; i ++ ) {
@@ -781,33 +780,31 @@ public final class DrawManager {
     /**
      * Draws background of map screen.
      *
-     * @param screen
-     *               Screen to draw on.
      *
      * */
-    public void drawMapBackground(final Screen screen) {
+    public void drawMapBackground() {
         Entity planet1 = new Entity(0, 0, 28 , 35, Color.WHITE) {
-            { this.spriteType = SpriteType.Planet1 ; }
+            { this.spriteType = SpriteType.PLANET1; }
         } ;
         drawEntity(planet1, 360, 350);
 
         Entity planet2 = new Entity(0, 0, 50 , 50, Color.WHITE) {
-            { this.spriteType = SpriteType.Planet2 ; }
+            { this.spriteType = SpriteType.PLANET2; }
         } ;
         drawEntity(planet2, -10, 130);
 
         Entity planet3 = new Entity(0, 0, 40 , 40, Color.WHITE) {
-            { this.spriteType = SpriteType.Planet2 ; }
+            { this.spriteType = SpriteType.PLANET2 ; }
         } ;
         drawEntity(planet3, 380, 190);
 
         Entity planet4 = new Entity(0, 0, 60 , 30, Color.WHITE) {
-            { this.spriteType = SpriteType.Planet3 ; }
+            { this.spriteType = SpriteType.PLANET3; }
         } ;
         drawEntity(planet4, 30, 300);
 
         Entity planet5 = new Entity(0, 0, 50 , 25, Color.WHITE) {
-            { this.spriteType = SpriteType.Planet3 ; }
+            { this.spriteType = SpriteType.PLANET3; }
         } ;
         drawEntity(planet5, 330, 30);
 
@@ -1340,7 +1337,7 @@ public final class DrawManager {
     }
 
     // Draw a "EXIT_LABEL" button at the top-left corner.
-    public void drawExitButton(final Screen screen, final boolean highlighted) {
+    public void drawExitButton() {
         backBufferGraphics.setFont(fontRegular);
         backBufferGraphics.setColor(Color.WHITE);
 
