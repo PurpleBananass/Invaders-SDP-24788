@@ -117,7 +117,8 @@ public final class DrawManager {
         ItemHeal,
         ItemTripleShot,
         ItemScoreBooster,
-        ItemBulletSpeedUp
+        ItemBulletSpeedUp,
+        Boss
     };
 
     /**
@@ -158,6 +159,7 @@ public final class DrawManager {
             spriteMap.put(SpriteType.ItemTripleShot, new boolean[5][7]);
             spriteMap.put(SpriteType.ItemScoreBooster, new boolean[5][5]);
             spriteMap.put(SpriteType.ItemBulletSpeedUp, new boolean[5][5]);
+            spriteMap.put(SpriteType.Boss, new boolean[50][30]);
 
             fileManager.loadSprite(spriteMap);
             logger.info("Finished loading the sprites.");

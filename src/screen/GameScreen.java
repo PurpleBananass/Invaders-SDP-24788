@@ -11,16 +11,10 @@ import engine.GameSettings;
 import engine.GameState;
 import engine.*;
 import engine.SoundManager;
-import entity.Bullet;
-import entity.BulletPool;
-import entity.EnemyShip;
-import entity.EnemyShipFormation;
-import entity.Entity;
-import entity.Ship;
+import entity.*;
 
 // NEW Item code
-import entity.Item;
-import entity.ItemPool;
+
 
 /**
  * Implements the game screen, where the action happens.(supports co-op with
@@ -88,6 +82,7 @@ public class GameScreen extends Screen {
     private int bulletsShot;
     private int shipsDestroyed;
     private Ship ship;
+    private Boss boss;
 
     /** checks if player took damage
      * 2025-10-02 add new variable

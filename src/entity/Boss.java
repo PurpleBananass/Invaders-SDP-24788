@@ -2,7 +2,7 @@ package entity;
 
 import java.awt.*;
 import java.util.function.IntSupplier;
-import java.util.function.IntSupplier;
+import engine.DrawManager.SpriteType;
 
 
 public class Boss extends Entity {
@@ -32,6 +32,9 @@ public class Boss extends Entity {
     private final Runnable spawnHP2Group;  // A 5기 스폰 훅
     private final Runnable clearShield;    // 기존 방패 제거 훅
 
+    private static final int BOSS_WIDTH = 50;
+    private static final int BOSS_HEIGHT = 30;
+
     // ===== 생성 =====
     public Boss(
             int x, int y,
@@ -41,12 +44,13 @@ public class Boss extends Entity {
             Runnable spawnHP2Group,
             Runnable clearShield
     ) {
-        super(x, y, 80, 60, Color.RED);
+        super(x, y, BOSS_WIDTH * 2, BOSS_HEIGHT * 2, Color.RED);
         this.emitter = emitter;
         this.minionAlive = minionAlive;
         this.spawnHP1Group = spawnHP1Group;
         this.spawnHP2Group = spawnHP2Group;
         this.clearShield = clearShield;
+        this.spriteType = SpriteType.Boss;
 
         // 시작: P1 방패(HP1) 5기
         if (spawnHP1Group != null) this.spawnHP1Group.run();
