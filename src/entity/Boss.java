@@ -4,7 +4,6 @@ import java.awt.*;
 import java.util.function.IntSupplier;
 import engine.DrawManager.SpriteType;
 
-
 public class Boss extends Entity {
 
     private final int maxHp = 10;
@@ -13,8 +12,9 @@ public class Boss extends Entity {
     private boolean invulnerable = true; // 매 update에서 쫄몹 수로 재계산
 
     // ===== 이동/발사 파라미터 =====
-    private int speedP1_pxPerFrame = 2;   // 프레임당 픽셀 (간단화)
-    private int speedP2_pxPerFrame = 3;
+    // 한 번 이동할 때의 "배수" 느낌으로 사용 (실제 이동량 = X_SPEED * speedP? )
+    private int speedP1_pxPerFrame = 1;   // P1 이동 배율
+    private int speedP2_pxPerFrame = 1;   // P2 이동 배율
 
     // 프레임 카운터 방식: N프레임마다 발사
     private int fireEveryFramesP1 = 36;   // 60fps 기준 ~0.6s
@@ -35,9 +35,21 @@ public class Boss extends Entity {
     private static final int BOSS_WIDTH = 50;
     private static final int BOSS_HEIGHT = 30;
 
+    // 화면 정보 & 이동 관련
+    private final int screenWidth;
+    private final int marginX = 10;
+
+    // EnemyShipFormation 비슷한 이동용 필드
+    private enum Direction { RIGHT, LEFT }
+
+    private Direction currentDirection = Direction.RIGHT;
+    private int movementInterval = 0;   // 매 프레임 +1
+    private int movementSpeed = 50;     // 클수록 더 느리게 (EnemyShipFormation 의 movementSpeed 느낌)
+    private final int X_SPEED = 2;      // 한번 움직일 때 기본 몇 픽셀 이동할지 (여기에 speedP? 배율 곱함)
+
     // ===== 생성 =====
     public Boss(
-            int x, int y,
+            int x, int y, int screenWidth,
             BulletEmitter emitter,
             IntSupplier minionAlive,
             Runnable spawnHP1Group,
@@ -51,6 +63,7 @@ public class Boss extends Entity {
         this.spawnHP2Group = spawnHP2Group;
         this.clearShield = clearShield;
         this.spriteType = SpriteType.Boss;
+        this.screenWidth = screenWidth;
 
         // 시작: P1 방패(HP1) 5기
         if (spawnHP1Group != null) this.spawnHP1Group.run();
@@ -59,8 +72,8 @@ public class Boss extends Entity {
 
     // ===== 메인 루프: 프레임 단위 업데이트 =====
     public void update() {
-        // 이동
-        this.positionY += (phase == BossPhase.P1 ? speedP1_pxPerFrame : speedP2_pxPerFrame);
+
+        moveHorizontally(); // EnemyShipFormation 스타일 좌우 이동
 
         // 무적 = (쫄몹 생존 수 > 0)
         if (minionAlive != null) {
@@ -103,6 +116,50 @@ public class Boss extends Entity {
             int offset = (i - mid) * dx;
             emitter.fire(this.positionX + offset, spawnY, 0, bulletVy);
         }
+    }
+
+    public void setPosition(int x, int y) {
+        this.positionX = x; // Boss 클래스의 위치 필드를 업데이트
+        this.positionY = y;
+    }
+
+    /**
+     * EnemyShipFormation 느낌으로 "툭툭" 이동하는 좌우 이동 로직.
+     */
+    private void moveHorizontally() {
+        // 매 프레임 카운트만 올리다가
+        movementInterval++;
+        if (movementInterval < movementSpeed) {
+            // 아직 움직일 타이밍 아님 → 그대로 정지
+            return;
+        }
+        // 움직일 타이밍이 됐으면 카운터 리셋
+        movementInterval = 0;
+
+        // 현재 페이즈에 따른 속도 배율 적용
+        int speed = (phase == BossPhase.P1 ? speedP1_pxPerFrame : speedP2_pxPerFrame);
+
+        // 지금 방향 기준으로 한 번에 움직일 거리 계산
+        int movementX = (currentDirection == Direction.RIGHT ? X_SPEED * speed : -X_SPEED * speed);
+
+        int candidateX = this.positionX + movementX;
+
+        // 화면 경계 체크
+        boolean isAtLeftSide  = candidateX <= marginX;
+        boolean isAtRightSide = candidateX + this.getWidth() >= screenWidth - marginX;
+
+        if (isAtLeftSide) {
+            // 왼쪽 벽에 닿으면 오른쪽으로 방향 전환
+            currentDirection = Direction.RIGHT;
+            candidateX = marginX;  // 벽 안으로 딱 붙여줌
+        } else if (isAtRightSide) {
+            // 오른쪽 벽에 닿으면 왼쪽으로 방향 전환
+            currentDirection = Direction.LEFT;
+            candidateX = screenWidth - marginX - this.getWidth();
+        }
+
+        // 최종 위치 적용
+        this.positionX = candidateX;
     }
 
     // ===== 테스트/튜닝용 getter & 설정치 =====

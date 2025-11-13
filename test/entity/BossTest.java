@@ -27,7 +27,7 @@ public class BossTest {
         when(minionAlive.getAsInt()).thenReturn(5);
 
         // 요구사항에 맞춰 HP 10, P2 전환 50% (HP 5)로 수정
-        boss = new Boss(10, 5, emitter, minionAlive, spawnHP1, spawnHP2, clearShield);
+        boss = new Boss(10, 5, 448, emitter, minionAlive, spawnHP1, spawnHP2, clearShield);
 
         // 테스트 편의를 위해 발사 간격 1로 설정
         boss.setFireEveryFramesP1(1);
