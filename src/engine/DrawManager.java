@@ -760,9 +760,9 @@ public final class DrawManager {
 
         drawMapHorizontalLine(screen, screen.getHeight() / 6 + 30);
 
-        Entity levelFrame = new Entity(0, 0, 80*2 + 40, 16*2 + 8, Color.GRAY) {
-            { this.spriteType = SpriteType.LEVEL_FRAME; }
-        } ;
+        Entity levelFrame = new Entity(0, 0, 80*2 + 40, 16*2 + 8, Color.GRAY);
+        levelFrame.spriteType = SpriteType.LEVEL_FRAME; 
+
 
         for ( int i = 0 ; i < items.length ; i ++ ) {
             if (i > items.length - idx - 1)
@@ -783,29 +783,24 @@ public final class DrawManager {
      *
      * */
     public void drawMapBackground() {
-        Entity planet1 = new Entity(0, 0, 28 , 35, Color.WHITE) {
-            { this.spriteType = SpriteType.PLANET1; }
-        } ;
+        Entity planet1 = new Entity(0, 0, 28 , 35, Color.WHITE);
+        planet1.spriteType = SpriteType.PLANET1; 
         drawEntity(planet1, 360, 350);
 
-        Entity planet2 = new Entity(0, 0, 50 , 50, Color.WHITE) {
-            { this.spriteType = SpriteType.PLANET2; }
-        } ;
+        Entity planet2 = new Entity(0, 0, 50 , 50, Color.WHITE);
+    	planet2.spriteType = SpriteType.PLANET2;
         drawEntity(planet2, -10, 130);
 
-        Entity planet3 = new Entity(0, 0, 40 , 40, Color.WHITE) {
-            { this.spriteType = SpriteType.PLANET2 ; }
-        } ;
+        Entity planet3 = new Entity(0, 0, 40 , 40, Color.WHITE);
+    	planet3.spriteType = SpriteType.PLANET2 ;
         drawEntity(planet3, 380, 190);
 
-        Entity planet4 = new Entity(0, 0, 60 , 30, Color.WHITE) {
-            { this.spriteType = SpriteType.PLANET3; }
-        } ;
+        Entity planet4 = new Entity(0, 0, 60 , 30, Color.WHITE);
+        planet4.spriteType = SpriteType.PLANET3; 
         drawEntity(planet4, 30, 300);
 
-        Entity planet5 = new Entity(0, 0, 50 , 25, Color.WHITE) {
-            { this.spriteType = SpriteType.PLANET3; }
-        } ;
+        Entity planet5 = new Entity(0, 0, 50 , 25, Color.WHITE);
+       	planet5.spriteType = SpriteType.PLANET3;
         drawEntity(planet5, 330, 30);
 
     }
