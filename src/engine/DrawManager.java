@@ -62,6 +62,8 @@ public final class DrawManager {
 
     private final java.util.List<Explosion> explosions = new java.util.ArrayList<>();
 
+    private final int SEPARATION_LINE_HEIGHT = 68;
+
     /**
      * Stars background animations for both game and main menu
      * Star density specified as argument.
@@ -1424,5 +1426,44 @@ public final class DrawManager {
         int height = barThickness * 2;
 
         return new Rectangle(x, y, width, height);
+    }
+
+    /**
+     * Draws the boss health bar.
+     *
+     * @param screen
+     * Screen to draw on.
+     * @param currentHp
+     * Boss's current HP.
+     * @param maxHp
+     * Boss's maximum HP.
+     */
+    public void drawBossHPBar(final Screen screen, final int currentHp, final int maxHp) {
+        int barY = SEPARATION_LINE_HEIGHT + 10; // 구분선(68)보다 10px 아래
+        int barHeight = 15;
+        int barWidth = screen.getWidth() - 40; // 좌우 여백 20px
+        int barX = 20;
+
+        // HP 바 배경 (회색)
+        backBufferGraphics.setColor(Color.DARK_GRAY);
+        backBufferGraphics.fillRect(barX, barY, barWidth, barHeight);
+
+        // 현재 HP (체력 비율에 따라 너비 계산)
+        float hpRatio = (float) currentHp / maxHp;
+        int hpWidth = (int) (barWidth * hpRatio);
+
+        // HP 색상 (예: 50% 이하면 노란색, 25% 이하면 빨간색)
+        if (hpRatio < 0.25f) {
+            backBufferGraphics.setColor(Color.RED);
+        } else if (hpRatio < 0.5f) {
+            backBufferGraphics.setColor(Color.YELLOW);
+        } else {
+            backBufferGraphics.setColor(Color.GREEN); // 페이즈1 또는 P2의 초기 HP
+        }
+        backBufferGraphics.fillRect(barX, barY, hpWidth, barHeight);
+
+        // HP 바 테두리 (흰색)
+        backBufferGraphics.setColor(Color.WHITE);
+        backBufferGraphics.drawRect(barX, barY, barWidth, barHeight);
     }
 }

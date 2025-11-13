@@ -27,7 +27,7 @@ public final class Core {
     private static final int FPS = 60;
 
     /** Lives per player (used to compute team pool in shared mode). */
-    private static final int MAX_LIVES = 3;
+    private static final int MAX_LIVES = 100;
     private static final int EXTRA_LIFE_FRECUENCY = 3;
 
     /** Frame to draw the screen on. */
@@ -100,38 +100,69 @@ public final class Core {
 
                     break;
 
+// src/engine/Core.java 의 main 메소드 내부
+
+// src/engine/Core.java 의 main 메소드 내부
+
                 case 2:
                     // 2P mode: building gameState now using user choice
-                    gameState = new GameState(1, MAX_LIVES, coopSelected, 0);
+                    gameState = new GameState(6, MAX_LIVES, coopSelected, 0);
 
+                    // [ ... case 2: ... ]
                     do {
                         // Extra life this level? Give it if team pool is below cap.
                         int teamCap = gameState.isCoop() ? (MAX_LIVES * GameState.NUM_PLAYERS) : MAX_LIVES;
                         boolean bonusLife = gameState.getLevel() % EXTRA_LIFE_FRECUENCY == 0
                                 && gameState.getLivesRemaining() < teamCap;
 
-                        currentScreen = new GameScreen(
-                                gameState,
-                                gameSettings.get(gameState.getLevel() - 1),
-                                bonusLife, width, height, FPS, shipTypeP1, shipTypeP2, achievementManager);
+                        int currentLevel = gameState.getLevel();
 
+                        if (currentLevel == gameSettings.size() + 1) { // 보스 레벨
+                            currentScreen = new BossScreen(
+                                    gameState, width, height, FPS,
+                                    shipTypeP1, shipTypeP2, achievementManager); // BossScreen 생성
+
+                            LOGGER.info("Starting Boss Screen.");
+
+                        } else if (currentLevel <= gameSettings.size()) { // 일반 레벨
+                            currentScreen = new GameScreen(
+                                    gameState,
+                                    gameSettings.get(currentLevel - 1),
+                                    bonusLife, width, height, FPS, shipTypeP1, shipTypeP2, achievementManager);
+
+                            LOGGER.info("Starting Game Screen Level " + currentLevel);
+
+                        } else {
+                            // 모든 레벨과 보스를 클리어함
+                            break;
+                        }
+
+                        // === 이 부분이 빠져있었습니다! ===
                         LOGGER.info("Starting " + WIDTH + "x" + HEIGHT + " game screen at " + FPS + " fps.");
-                        returnCode = frame.setScreen(currentScreen);
+                        returnCode = frame.setScreen(currentScreen); // 1. 스크린을 실제로 실행
                         LOGGER.info("Closing game screen.");
+
+                        // 2. 게임 도중 메뉴로 나갔을 경우 (Pause -> Backspace)
                         if (returnCode == 1) {
                             break;
                         }
 
-                        gameState = ((GameScreen) currentScreen).getGameState();
+                        // 3. 실행된 스크린의 최신 gameState를 가져옴
+                        if (currentScreen instanceof GameScreen) {
+                            gameState = ((GameScreen) currentScreen).getGameState();
+                        } else if (currentScreen instanceof BossScreen) {
+                            // BossScreen.java에도 getGameState()가 구현되어 있어야 합니다.
+                            gameState = ((BossScreen) currentScreen).getGameState();
+                        }
+                        // ===================================
+
 
                         if (gameState.teamAlive()) {
                             gameState.nextLevel();
                         }
 
-                    } while (gameState.teamAlive() && gameState.getLevel() <= gameSettings.size());
-                    if (returnCode == 1) {
-                        break;
-                    }
+                    } while (gameState.teamAlive() && gameState.getLevel() <= (gameSettings.size() + 1)); // +1은 보스 레벨
+
                     LOGGER.info("Starting " + WIDTH + "x" + HEIGHT + " score screen at " + FPS + " fps, with a score of "
                             + gameState.getScore() + ", "
                             + gameState.getLivesRemaining() + " lives remaining, "
