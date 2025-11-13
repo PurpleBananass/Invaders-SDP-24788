@@ -6,8 +6,8 @@ import engine.DrawManager.SpriteType;
 
 public class Boss extends Entity {
 
-    private final int maxHp = 20;
-    private int hp = 20;
+    private final int maxHp = 10;
+    private int hp = 10;
     private BossPhase phase = BossPhase.P1;
     /** 매 update마다 쫄몹 수로 다시 계산되는 무적 여부. */
     private boolean invulnerable = true;
