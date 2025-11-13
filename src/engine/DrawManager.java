@@ -62,6 +62,8 @@ public final class DrawManager {
 
     private final java.util.List<Explosion> explosions = new java.util.ArrayList<>();
 
+    private final int SEPARATION_LINE_HEIGHT = 68;
+
     /**
      * Stars background animations for both game and main menu
      * Star density specified as argument.
@@ -73,7 +75,6 @@ public final class DrawManager {
 
     // Variables for hitbox fine-tuning
     private int menuHitboxOffset = 20; // add this line
-    private final int SEPARATION_LINE_HEIGHT = 67;
 
     // Label for back button
     private static final String BACK_LABEL = "< Back";
@@ -1426,7 +1427,6 @@ public final class DrawManager {
 
         return new Rectangle(x, y, width, height);
     }
-
 
     /**
      * Draws the boss health bar.

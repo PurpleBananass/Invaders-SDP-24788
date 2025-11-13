@@ -101,6 +101,10 @@ public final class Core {
 
                     break;
 
+// src/engine/Core.java 의 main 메소드 내부
+
+// src/engine/Core.java 의 main 메소드 내부
+
                 case 2:
                     // 2P mode: building gameState now using user choice
                     gameState = new GameState(6, MAX_LIVES, coopSelected, 0);
