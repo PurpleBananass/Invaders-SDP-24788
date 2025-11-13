@@ -16,7 +16,8 @@ public class Bullet extends Entity {
      * Speed of the bullet, positive or negative depending on direction -
      * positive is down.
      */
-    private int speed;
+    private int speedX;
+    private int speedY;
 
     /**
      * 2P mode: id number to specifying who fired the bullet -
@@ -41,7 +42,8 @@ public class Bullet extends Entity {
     // change the constructor to receive width and height
     public Bullet(final int positionX, final int positionY, final int width, final int height, final int speed) {
         super(positionX, positionY,0,0 , Color.WHITE);
-        this.speed = speed;
+        this.speedY = speed;
+        this.speedX = 0;
     }
 
     // reset the size when recycling bullets
@@ -54,7 +56,7 @@ public class Bullet extends Entity {
      * Sets correct sprite for the bullet, based on speed.
      */
     public final void setSprite() {
-        if (this.speed < 0) {
+        if (this.speedY < 0) {
             this.spriteType = SpriteType.Bullet; // player bullet fired, team remains NEUTRAL
         } else {
             this.spriteType = SpriteType.EnemyBullet; // enemy fired bullet
@@ -65,7 +67,8 @@ public class Bullet extends Entity {
      * Updates the bullet's position.
      */
     public final void update() {
-        this.positionY += this.speed;
+        this.positionY += this.speedY;
+        this.positionX += this.speedX;
     }
 
     /**
@@ -75,8 +78,9 @@ public class Bullet extends Entity {
      *              New speed of the bullet.
      */
     public final void setSpeed(final int speed) {
-        this.speed = speed;
+        this.speedY = speed;
     }
+    public final void setSpeedX(final int speedX) { this.speedX = speedX; }
 
     /**
      * Getter for the speed of the bullet.
@@ -84,7 +88,10 @@ public class Bullet extends Entity {
      * @return Speed of the bullet.
      */
     public final int getSpeed() {
-        return this.speed;
+        return this.speedY;
+    }
+    public final int getSpeedX() {
+        return this.speedX;
     }
 
     // 2P mode: adding owner API, standardised player API

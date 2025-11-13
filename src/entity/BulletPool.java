@@ -50,6 +50,7 @@ public final class BulletPool {
             bullet.setPositionX(positionX - width / 2);
             bullet.setPositionY(positionY);
             bullet.setSpeed(speed);
+            bullet.setSpeedX(0);
             bullet.setSize(width, height);  // bullet size
             bullet.setTeam(team);	// team setting
         } else {
