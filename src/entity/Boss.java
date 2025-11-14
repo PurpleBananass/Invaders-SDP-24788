@@ -135,8 +135,7 @@ public class Boss extends Entity {
             this.spawnHP2Group.run(); // HP2 5기
         }
         if (this.onPhase2Start != null) {
-            this.onPhase2Start.run();
-        }
+            this.onPhase2Start.run();}
         // invulnerable은 다음 update에서 쫄몹 생존 수로 자동 반영
         // 발사 주기는 frameCounter 유지(주기만 달라짐)
     }

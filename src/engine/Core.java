@@ -107,7 +107,7 @@ public final class Core {
 
                 case 2:
                     // 2P mode: building gameState now using user choice
-                    gameState = new GameState(6, MAX_LIVES, coopSelected, 0);
+                    gameState = new GameState(1, MAX_LIVES, coopSelected, 0);
 
                     // [ ... case 2: ... ]
                     do {

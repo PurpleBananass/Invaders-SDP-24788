@@ -268,6 +268,7 @@ public class BossScreen extends Screen {
             }
 
             handleCollisionsAndCleanup();
+            checkInGameAchievements();
 
             if (!state.teamAlive() && !this.levelFinished) {
                 logger.info("Player team is defeated on Boss Screen.");
@@ -442,7 +443,18 @@ public class BossScreen extends Screen {
             if (!this.tookDamageThisLevel) {
                 achievementManager.unlock("Survivor");
             }
-            achievementManager.unlock("Clear"); // "Clear" achievement
+            int totalHitsLanded = state.getShipsDestroyed() + this.boss.getMaxHp();
+            int totalBulletsShot = state.getBulletsShot();
+            double Accuracy = 0.0;
+            if (totalBulletsShot > 0) {
+                Accuracy = (double) totalHitsLanded / (double) totalBulletsShot;
+            }
+            if (Accuracy >= 0.8) {
+                achievementManager.unlock("Sharpshooter");
+            }
+            if(totalBulletsShot > 0 && totalBulletsShot == totalHitsLanded){
+                achievementManager.unlock("Perfect Shooter");
+            }
         }
 
         // Screen transition
@@ -741,6 +753,28 @@ public class BossScreen extends Screen {
         // (else if 사용) 2페이즈 메시지가 아닐 때만 무적 메시지 확인 (하얀색)
         else if (this.invulnerableMsgCooldown != null && !this.invulnerableMsgCooldown.checkFinished()) {
             drawManager.drawString(this, MSG_MINIONS_FIRST, x, y, java.awt.Color.WHITE);
+        }
+    }
+
+    /**
+     * Checks for in-game achievements (ported from GameScreen).
+     * These achievements can be unlocked at any time during gameplay.
+     */
+    public void checkInGameAchievements() {
+        // First Blood (Checks if this is the first kill of the game)
+        // state.getShipsDestroyed()는 GameState에 의해 관리되므로 보스전 쫄몹을 잡아도 1이 됩니다.
+        if (state.getShipsDestroyed() == 1) {
+            achievementManager.unlock("First Blood");
+        }
+
+        // 50 Bullets
+        if (state.getBulletsShot() >= 50) {
+            achievementManager.unlock("50 Bullets");
+        }
+
+        // Get 3000 Score
+        if (state.getScore() >= 3000) {
+            achievementManager.unlock("Get 3000 Score");
         }
     }
 }
