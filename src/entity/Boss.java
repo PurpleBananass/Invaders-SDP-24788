@@ -152,10 +152,10 @@ public class Boss extends Entity {
 
         if (ways == 3) {
             angles = new double[]{-15.0, 0.0, 15.0};
-        } else if (ways == 4) {
-            angles = new double[]{-21.0, -7.0, 7.0, 21.0};
         } else if (ways == 5) {
             angles = new double[]{-30.0, -15.0, 0.0, 15.0, 30.0};
+        } else if (ways == 4) {
+            angles = new double[]{-21.0, -7.0, 7.0, 21.0};
         } else if (ways == 7) {
             angles = new double[]{-30.0, -20.0, -10.0, 0.0, 10.0, 20.0, 30.0};
         } else {

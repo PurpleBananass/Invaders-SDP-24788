@@ -245,6 +245,35 @@ public class BossScreen extends Screen {
             }
 
             handleCollisionsAndCleanup();
+
+            if (!state.teamAlive() && !this.levelFinished) {
+                logger.info("Player team is defeated on Boss Screen.");
+
+                // 게임 오버 시퀀스 트리거
+                this.levelFinished = true;
+                this.screenFinishedCooldown.reset();
+
+                // 음악 멈추고 패배 사운드 재생
+                SoundManager.stopAllMusic(); // BGM 중지
+                SoundManager.playOnce("sound/lose.wav"); // 패배 사운드 재생
+
+                // 패배 시 즉시 엔티티 재활용
+                BulletPool.recycle(this.bullets);
+                this.bullets.clear();
+                ItemPool.recycle(items);
+                this.items.clear();
+
+                // 보스와 쫄몹 화면에서 제거
+                if (this.boss != null) {
+                    this.boss = null;
+                }
+                if (this.minionFormation != null) {
+                    for (EnemyShip minion : this.minionFormation) {
+                        minion.destroy(); // 폭발 이펙트 없이 파괴
+                    }
+                }
+            }
+
             handleEndOfLevel();
             updateAchievements();
         }
