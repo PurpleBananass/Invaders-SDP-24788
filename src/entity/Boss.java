@@ -35,6 +35,7 @@ public class Boss extends Entity {
     private final Runnable spawnHP1Group;  // B/C 5기 스폰 훅
     private final Runnable spawnHP2Group;  // A 5기 스폰 훅
     private final Runnable clearShield;    // 기존 방패 제거 훅
+    private final Runnable onPhase2Start;
 
     private static final int BOSS_WIDTH = 50;
     private static final int BOSS_HEIGHT = 30;
@@ -56,6 +57,7 @@ public class Boss extends Entity {
     /** 한 번 이동할 때 기본 이동 거리(픽셀). 여기에 speedP? 배율이 곱해짐. */
     private final int X_SPEED = 8;
 
+
     // ===== 생성 =====
     public Boss(
             int x, int y, int screenWidth,
@@ -63,7 +65,8 @@ public class Boss extends Entity {
             IntSupplier minionAlive,
             Runnable spawnHP1Group,
             Runnable spawnHP2Group,
-            Runnable clearShield
+            Runnable clearShield,
+            Runnable onPhase2Start
     ) {
         super(x, y, BOSS_WIDTH * 2, BOSS_HEIGHT * 2, Color.RED);
         this.emitter = emitter;
@@ -71,6 +74,7 @@ public class Boss extends Entity {
         this.spawnHP1Group = spawnHP1Group;
         this.spawnHP2Group = spawnHP2Group;
         this.clearShield = clearShield;
+        this.onPhase2Start = onPhase2Start;
         this.spriteType = SpriteType.Boss;
         this.screenWidth = screenWidth;
 
@@ -129,6 +133,9 @@ public class Boss extends Entity {
         }
         if (this.spawnHP2Group != null) {
             this.spawnHP2Group.run(); // HP2 5기
+        }
+        if (this.onPhase2Start != null) {
+            this.onPhase2Start.run();
         }
         // invulnerable은 다음 update에서 쫄몹 생존 수로 자동 반영
         // 발사 주기는 frameCounter 유지(주기만 달라짐)

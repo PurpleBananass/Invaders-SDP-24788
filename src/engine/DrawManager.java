@@ -52,6 +52,10 @@ public final class DrawManager {
     private static Font fontRegular;
     /** Normal sized font properties. */
     private static FontMetrics fontRegularMetrics;
+    /** Small sized font. */
+    private static Font fontSmall;
+    /** Small sized font properties. */
+    private static FontMetrics fontSmallMetrics;
     /** Big sized font. */
     private static Font fontBig;
     /** Big sized font properties. */
@@ -169,6 +173,7 @@ public final class DrawManager {
             // Font loading.
             fontRegular = fileManager.loadFont(14f);
             fontBig = fileManager.loadFont(24f);
+            fontSmall = fileManager.loadFont(12f);
             logger.info("Finished loading the fonts.");
 
         } catch (IOException e) {
@@ -219,6 +224,7 @@ public final class DrawManager {
 
         fontRegularMetrics = backBufferGraphics.getFontMetrics(fontRegular);
         fontBigMetrics = backBufferGraphics.getFontMetrics(fontBig);
+        fontSmallMetrics = backBufferGraphics.getFontMetrics(fontSmall);
 
         // drawBorders(screen);
         // drawGrid(screen);
@@ -1465,5 +1471,10 @@ public final class DrawManager {
         // HP 바 테두리 (흰색)
         backBufferGraphics.setColor(Color.WHITE);
         backBufferGraphics.drawRect(barX, barY, barWidth, barHeight);
+    }
+    public void drawString(final Screen screen, final String text, final int x, final int y, final Color color) {
+        backBufferGraphics.setFont(fontSmall);
+        backBufferGraphics.setColor(color);
+        backBufferGraphics.drawString(text, x, y);
     }
 }

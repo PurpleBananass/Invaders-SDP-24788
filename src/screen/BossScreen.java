@@ -87,6 +87,20 @@ public class BossScreen extends Screen {
     private final Ship.ShipType shipTypeP1;
     private final Ship.ShipType shipTypeP2;
 
+    /** (Trigger 1) Message for attacking invulnerable boss. */
+    private static final String MSG_MINIONS_FIRST = "Let's defeat the minions first!";
+    /** Cooldown for the invulnerable message. */
+    private Cooldown invulnerableMsgCooldown;
+    /** Duration for the invulnerable message. */
+    private static final int INVULNERABLE_MSG_DURATION = 1000; // 1 second
+
+    /** (Trigger 2) Message for phase 2 start. */
+    private static final String MSG_PHASE_2 = "Phase 2 Started!";
+    /** Cooldown for the phase 2 message. */
+    private Cooldown phase2MsgCooldown;
+    /** Duration for the phase 2 message. */
+    private static final int PHASE_2_MSG_DURATION = 2000; // 2 seconds
+
     /**
      * Constructor, establishes the properties of the screen.
      *
@@ -179,6 +193,11 @@ public class BossScreen extends Screen {
             }
         };
 
+        Runnable onPhase2StartCallback = () -> {
+            logger.info("Boss entering Phase 2! Triggering message.");
+            this.phase2MsgCooldown.reset();
+        };
+
         IntSupplier minionAlive = () ->
                 (this.minionFormation != null) ? this.minionFormation.getShipCount() : 0;
 
@@ -191,12 +210,16 @@ public class BossScreen extends Screen {
 
         // 3. Create Boss
         int bossX = (this.width / 2) - (50 * 2 / 2); // Boss.java BOSS_WIDTH=50
-        this.boss = new Boss(bossX, bossY, this.width, emitter, minionAlive, spawnHP1Group, spawnHP2Group, clearShield);
+        this.boss = new Boss(bossX, bossY, this.width,
+                emitter, minionAlive, spawnHP1Group,
+                spawnHP2Group, clearShield, onPhase2StartCallback);
 
         // 4. Cooldowns and Sets
         this.screenFinishedCooldown = Core.getCooldown(SCREEN_CHANGE_INTERVAL);
         this.bullets = new HashSet<>();
         this.items = new HashSet<>();
+        this.invulnerableMsgCooldown = Core.getCooldown(INVULNERABLE_MSG_DURATION);
+        this.phase2MsgCooldown = Core.getCooldown(PHASE_2_MSG_DURATION);
 
         // Special input delay / countdown.
         this.gameStartTime = System.currentTimeMillis();
@@ -511,6 +534,8 @@ public class BossScreen extends Screen {
             drawManager.drawPauseOverlay(this);
         }
 
+        drawMessages();
+
         drawManager.completeDrawing(this);
     }
 
@@ -650,9 +675,13 @@ public class BossScreen extends Screen {
 
                     recyclable.add(bullet);
 
-                    // boss.onHit(1)은 Boss.java 내부에서 스스로 무적 상태(쫄몹 생존)를 확인하므로
-                    // 여기서 추가 확인이 필요 없습니다.
-                    this.boss.onHit(1); // 1의 데미지를 줍니다.
+                    if (this.boss.isInvulnerable()) {
+                        // 보스가 무적 상태일 때: 메시지 트리거
+                        this.invulnerableMsgCooldown.reset();
+                    } else {
+                        // 보스가 무적이 아닐 때: 데미지 적용
+                        this.boss.onHit(1);
+                    }
 
                     // 보스가 이 총알에 의해 죽었는지 확인
                     if (this.boss.getHp() <= 0) {
@@ -699,5 +728,19 @@ public class BossScreen extends Screen {
      */
     public final GameState getGameState() {
         return this.state;
+    }
+
+    private void drawMessages() {
+        int x = 10; // 왼쪽 하단 X 좌표
+        int y = this.height - 20; // 왼쪽 하단 Y 좌표 (텍스트 베이스라인)
+
+        // 2페이즈 메시지가 활성화 상태인지 확인 (노란색)
+        if (this.phase2MsgCooldown != null && !this.phase2MsgCooldown.checkFinished()) {
+            drawManager.drawString(this, MSG_PHASE_2, x, y, java.awt.Color.YELLOW);
+        }
+        // (else if 사용) 2페이즈 메시지가 아닐 때만 무적 메시지 확인 (하얀색)
+        else if (this.invulnerableMsgCooldown != null && !this.invulnerableMsgCooldown.checkFinished()) {
+            drawManager.drawString(this, MSG_MINIONS_FIRST, x, y, java.awt.Color.WHITE);
+        }
     }
 }
