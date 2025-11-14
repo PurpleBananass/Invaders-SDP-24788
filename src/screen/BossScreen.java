@@ -100,6 +100,10 @@ public class BossScreen extends Screen {
     private Cooldown phase2MsgCooldown;
     /** Duration for the phase 2 message. */
     private static final int PHASE_2_MSG_DURATION = 2000; // 2 seconds
+    /** Counter for the invulnerable message. */
+    private int invulnerableMsgCount;
+    /** Maximum times the invulnerable message can be shown. */
+    private static final int MAX_INVULNERABLE_MSG_SHOWS = 3;
 
     /**
      * Constructor, establishes the properties of the screen.
@@ -220,6 +224,8 @@ public class BossScreen extends Screen {
         this.items = new HashSet<>();
         this.invulnerableMsgCooldown = Core.getCooldown(INVULNERABLE_MSG_DURATION);
         this.phase2MsgCooldown = Core.getCooldown(PHASE_2_MSG_DURATION);
+
+        this.invulnerableMsgCount = 0;
 
         // Special input delay / countdown.
         this.gameStartTime = System.currentTimeMillis();
@@ -688,11 +694,14 @@ public class BossScreen extends Screen {
                     recyclable.add(bullet);
 
                     if (this.boss.isInvulnerable()) {
-                        // 보스가 무적 상태일 때: 메시지 트리거
-                        this.invulnerableMsgCooldown.reset();
+                        // 보스가 무적 상태일 때: 3번 미만으로 띄웠는지 확인
+                        if (this.invulnerableMsgCount < MAX_INVULNERABLE_MSG_SHOWS) {
+                            this.invulnerableMsgCooldown.reset(); // 메시지 타이머 리셋
+                            this.invulnerableMsgCount++;          // 카운터 증가
+                        }
                     } else {
                         // 보스가 무적이 아닐 때: 데미지 적용
-                        this.boss.onHit(1);
+                        this.boss.onHit(1); // 1의 데미지를 줍니다.
                     }
 
                     // 보스가 이 총알에 의해 죽었는지 확인
