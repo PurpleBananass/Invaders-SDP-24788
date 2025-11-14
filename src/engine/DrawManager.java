@@ -20,7 +20,6 @@ import java.util.logging.Logger;
 import Animations.BasicGameSpace;
 import Animations.Explosion;
 import Animations.MenuSpace;
-import com.sun.tools.javac.Main;
 import screen.Screen;
 import entity.Entity;
 import entity.Ship;
@@ -76,6 +75,8 @@ public final class DrawManager {
 
     // Label for back button
     private static final String BACK_LABEL = "< Back";
+    // Label for exit button
+    private static final String EXIT_LABEL = "< Exit";
 
     /** Sprite types. */
     public static enum SpriteType {
@@ -117,7 +118,15 @@ public final class DrawManager {
         ItemHeal,
         ItemTripleShot,
         ItemScoreBooster,
-        ItemBulletSpeedUp
+        ITEM_BULLET_SPEEDUP,
+
+        /** 레벨 나타내는 틀*/
+        LEVEL_FRAME,
+
+        /** 행성 모양*/
+        PLANET1,
+        PLANET2,
+        PLANET3
     };
 
     /**
@@ -157,7 +166,13 @@ public final class DrawManager {
             spriteMap.put(SpriteType.ItemHeal, new boolean[5][5]);
             spriteMap.put(SpriteType.ItemTripleShot, new boolean[5][7]);
             spriteMap.put(SpriteType.ItemScoreBooster, new boolean[5][5]);
-            spriteMap.put(SpriteType.ItemBulletSpeedUp, new boolean[5][5]);
+            spriteMap.put(SpriteType.ITEM_BULLET_SPEEDUP, new boolean[5][5]);
+
+            spriteMap.put(SpriteType.LEVEL_FRAME, new boolean[38][15]);
+
+            spriteMap.put(SpriteType.PLANET1, new boolean[8][10]);
+            spriteMap.put(SpriteType.PLANET2, new boolean[10][10]);
+            spriteMap.put(SpriteType.PLANET3, new boolean[17][10]);
 
             fileManager.loadSprite(spriteMap);
             logger.info("Finished loading the sprites.");
@@ -617,6 +632,25 @@ public final class DrawManager {
                 positionY + 1);
     }
 
+    /**
+     * Draws a thick line from side to side of the screen.
+     *
+     * @param screen
+     *                  Screen to draw on.
+     * @param positionY
+     *                  Y coordinate of the line.
+     */
+    public void drawMapHorizontalLine(final Screen screen, final int positionY) {
+        backBufferGraphics.setColor(Color.WHITE);
+        backBufferGraphics.drawLine(screen.getHeight() / 7, positionY, screen.getWidth(), positionY);
+        backBufferGraphics.drawLine(screen.getHeight() / 7, positionY + 1, screen.getWidth(),
+                positionY + 1);
+        backBufferGraphics.setColor(Color.BLACK);
+        backBufferGraphics.drawLine(screen.getHeight() / 7*5, positionY, screen.getWidth(), positionY);
+        backBufferGraphics.drawLine(screen.getHeight() / 7*5, positionY + 1, screen.getWidth(),
+                positionY + 1);
+    }
+
     public void drawLevel (final Screen screen, final int level) {
         backBufferGraphics.setColor(Color.WHITE);
         String levelString = "Level " + level;
@@ -705,7 +739,73 @@ public final class DrawManager {
          * 2 + spacing * 3); */
     }
 
-	/**
+    /**
+     * Draws map.
+     *
+     * @param screen
+     *               Screen to draw on.
+     * @param selectedIndex
+     *               Option selected.
+     * */
+    public void drawMap(final Screen screen, final int selectedIndex) {
+        String[] items = {"BOSS", "level 5", "level 4","level 3", "level 2", "level 1"};
+        String titleString = "save earth!";
+        String instructionsString = "Press Space to play, Escape to exit";
+        int idx = 4; // idx를 변수로 받아와서 지정해줘야 합니다!!
+
+        drawExitButton();
+
+        backBufferGraphics.setColor(Color.GREEN);
+        drawCenteredBigString(screen, titleString, screen.getHeight() / 6 + 10);
+
+        drawMapHorizontalLine(screen, screen.getHeight() / 6 + 30);
+
+        Entity levelFrame = new Entity(0, 0, 80*2 + 40, 16*2 + 8, Color.GRAY);
+        levelFrame.spriteType = SpriteType.LEVEL_FRAME; 
+
+
+        for ( int i = 0 ; i < items.length ; i ++ ) {
+            if (i > items.length - idx - 1)
+                levelFrame.changeColor(Color.GREEN);
+
+            drawEntity(levelFrame, screen.getWidth()/2 - (80*2 + 40)/2, 130 + 50 * i ) ;
+            drawCenteredBigString(screen, items[i], 160 + 50 * i );
+        }
+
+        backBufferGraphics.setColor(Color.GRAY);
+        drawCenteredRegularString(screen, instructionsString,
+                screen.getHeight() / 15 * 14);
+    }
+
+    /**
+     * Draws background of map screen.
+     *
+     *
+     * */
+    public void drawMapBackground() {
+        Entity planet1 = new Entity(0, 0, 28 , 35, Color.WHITE);
+        planet1.spriteType = SpriteType.PLANET1; 
+        drawEntity(planet1, 360, 350);
+
+        Entity planet2 = new Entity(0, 0, 50 , 50, Color.WHITE);
+    	planet2.spriteType = SpriteType.PLANET2;
+        drawEntity(planet2, -10, 130);
+
+        Entity planet3 = new Entity(0, 0, 40 , 40, Color.WHITE);
+    	planet3.spriteType = SpriteType.PLANET2 ;
+        drawEntity(planet3, 380, 190);
+
+        Entity planet4 = new Entity(0, 0, 60 , 30, Color.WHITE);
+        planet4.spriteType = SpriteType.PLANET3; 
+        drawEntity(planet4, 30, 300);
+
+        Entity planet5 = new Entity(0, 0, 50 , 25, Color.WHITE);
+       	planet5.spriteType = SpriteType.PLANET3;
+        drawEntity(planet5, 330, 30);
+
+    }
+
+    /**
 	 * Draws game results.
 	 *
 	 * @param screen
@@ -1229,6 +1329,16 @@ public final class DrawManager {
         int margin = 12;
         int ascent = fontRegularMetrics.getAscent();
         backBufferGraphics.drawString(BACK_LABEL, margin, margin + ascent);
+    }
+
+    // Draw a "EXIT_LABEL" button at the top-left corner.
+    public void drawExitButton() {
+        backBufferGraphics.setFont(fontRegular);
+        backBufferGraphics.setColor(Color.WHITE);
+
+        int margin = 12;
+        int ascent = fontRegularMetrics.getAscent();
+        backBufferGraphics.drawString(EXIT_LABEL, margin, margin + ascent);
     }
 
     // add this line

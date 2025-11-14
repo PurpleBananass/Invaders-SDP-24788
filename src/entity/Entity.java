@@ -23,7 +23,7 @@ public class Entity {
     /** Color of the entity. */
     private Color color;
     /** Sprite type assigned to the entity. */
-    protected SpriteType spriteType;
+    public SpriteType spriteType;
 
     // 2P mode: adding team for multiplayer
     public enum Team {
