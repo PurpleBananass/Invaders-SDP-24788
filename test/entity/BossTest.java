@@ -14,6 +14,7 @@ public class BossTest {
     BulletEmitter emitter;
     IntSupplier minionAlive;
     Runnable spawnHP1, spawnHP2, clearShield;
+    Runnable onPhase2Start;
     Boss boss;
 
     @BeforeEach
@@ -23,11 +24,12 @@ public class BossTest {
         spawnHP1 = mock(Runnable.class);
         spawnHP2 = mock(Runnable.class);
         clearShield = mock(Runnable.class);
+        onPhase2Start = mock(Runnable.class);
 
         when(minionAlive.getAsInt()).thenReturn(5);
 
         // 요구사항에 맞춰 HP 10, P2 전환 50% (HP 5)로 수정
-        boss = new Boss(10, 5, 448, emitter, minionAlive, spawnHP1, spawnHP2, clearShield);
+        boss = new Boss(10, 5, 448, emitter, minionAlive, spawnHP1, spawnHP2, clearShield, onPhase2Start);
 
         // 테스트 편의를 위해 발사 간격 1로 설정
         boss.setFireEveryFramesP1(1);
@@ -87,9 +89,10 @@ public class BossTest {
         boss.update();
         boss.onHit(6); // 10 -> 4 (P2 전환)
 
-        InOrder order = inOrder(clearShield, spawnHP2);
+        InOrder order = inOrder(clearShield, spawnHP2, onPhase2Start);
         order.verify(clearShield).run();
         order.verify(spawnHP2).run();
+        order.verify(onPhase2Start).run();
 
         clearInvocations(emitter);
         boss.update();
@@ -107,5 +110,83 @@ public class BossTest {
         boss.update();
         boss.onHit(3);
         assertEquals(7, boss.getHp()); // 10 -> 7
+    }
+
+    @Test
+    @DisplayName("P1에서 update 50회 호출 시 1회 오른쪽 이동")
+    void p1MovesRight() {
+        int initialX = boss.getPositionX();
+        int expectedSpeed = 8 * 1;
+
+        for (int i = 0; i < 50; i++) {
+            boss.update();
+        }
+
+        assertEquals(initialX + expectedSpeed, boss.getPositionX());
+    }
+
+    @Test
+    @DisplayName("P2에서 update 80회 호출 시 1회 오른쪽 이동")
+    void p2MovesRight() {
+        when(minionAlive.getAsInt()).thenReturn(0);
+        boss.update();
+        boss.onHit(6);
+
+        boss.setSpeedP2_pxPerFrame(3);
+        int expectedSpeed = 8 * 3;
+        int initialX = boss.getPositionX();
+
+        for (int i = 0; i < 80; i++) {
+            boss.update();
+        }
+
+        assertEquals(initialX + expectedSpeed, boss.getPositionX());
+    }
+
+    @Test
+    @DisplayName("오른쪽 벽에 닿으면 방향 전환")
+    void hitsRightWallAndTurnsLeft() {
+        boss.setPosition(337, 5);
+
+        for (int i = 0; i < 50; i++) boss.update();
+        assertEquals(338, boss.getPositionX());
+
+        for (int i = 0; i < 50; i++) boss.update();
+        assertEquals(338 - 8, boss.getPositionX());
+    }
+
+    @Test
+    @DisplayName("왼쪽 벽에 닿으면 방향 전환")
+    void hitsLeftWallAndTurnsRight() {
+        boss.setPosition(337, 5);
+        for (int i = 0; i < 50; i++) boss.update();
+
+        boss.setPosition(11, 5);
+
+        for (int i = 0; i < 50; i++) boss.update();
+        assertEquals(10, boss.getPositionX());
+
+        for (int i = 0; i < 50; i++) boss.update();
+        assertEquals(10 + 8, boss.getPositionX());
+    }
+
+    @Test
+    @DisplayName("HP가 0보다 낮아지면 0으로 고정")
+    void bossHpGoesBelowZero() {
+        when(minionAlive.getAsInt()).thenReturn(0);
+        boss.update();
+
+        boss.onHit(15);
+        assertEquals(0, boss.getHp());
+    }
+
+    @Test
+    @DisplayName("Emitter가 null일 때 update() 호출 시 NPE 발생 안 함")
+    void nullEmitterDoesNotCrash() {
+        Boss nullBoss = new Boss(10, 5, 448, null, minionAlive,
+                spawnHP1, spawnHP2, clearShield, onPhase2Start);
+        nullBoss.setFireEveryFramesP1(1);
+
+        assertDoesNotThrow(() -> nullBoss.update());
     }
 }
