@@ -1,6 +1,8 @@
 package screen;
 
 import engine.GameState;
+import engine.SoundManager;
+
 import java.awt.event.KeyEvent;
 
 public class StoryScreen extends Screen {
@@ -21,6 +23,8 @@ public class StoryScreen extends Screen {
         super(width, height, fps);
         this.currentLevel = currentLevel;
         this.returnCode = 1;
+
+        SoundManager.playLoop("sound/menu_sound.wav");
     }
 
     @Override

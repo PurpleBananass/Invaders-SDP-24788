@@ -1,6 +1,8 @@
 package screen;
 
 import engine.GameState ;
+import engine.SoundManager;
+
 import java.awt.event.KeyEvent;
 
 public class MapScreen extends Screen {
@@ -20,6 +22,8 @@ public class MapScreen extends Screen {
         super(width, height, fps);
         this.currentLevel = currentLevel;
         this.returnCode = 1;
+
+        SoundManager.playLoop("sound/menu_sound.wav");
     }
 
     /** 현재스테이지 인덱스 */

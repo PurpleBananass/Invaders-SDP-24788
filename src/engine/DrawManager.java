@@ -53,8 +53,6 @@ public final class DrawManager {
     private static FontMetrics fontRegularMetrics;
     /** Small sized font. */
     private static Font fontSmall;
-    /** Small sized font properties. */
-    private static FontMetrics fontSmallMetrics;
     /** Big sized font. */
     private static Font fontBig;
     /** Big sized font properties. */
@@ -240,7 +238,6 @@ public final class DrawManager {
 
         fontRegularMetrics = backBufferGraphics.getFontMetrics(fontRegular);
         fontBigMetrics = backBufferGraphics.getFontMetrics(fontBig);
-        this.fontSmallMetrics = backBufferGraphics.getFontMetrics(fontSmall);
 
         // drawBorders(screen);
         // drawGrid(screen);
