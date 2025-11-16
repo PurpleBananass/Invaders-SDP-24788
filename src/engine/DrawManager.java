@@ -750,6 +750,13 @@ public final class DrawManager {
          * 2 + spacing * 3); */
     }
 
+    public void drawStory(final Screen screen, final int selectedIndex) {
+        String string = "story here! (level" + selectedIndex + ")" ;
+
+        backBufferGraphics.setColor(Color.GRAY);
+        drawCenteredBigString(screen, string, screen.getHeight() / 6 + 100);
+    }
+
     /**
      * Draws map.
      *
@@ -762,7 +769,7 @@ public final class DrawManager {
         String[] items = {"BOSS", "level 5", "level 4","level 3", "level 2", "level 1"};
         String titleString = "save earth!";
         String instructionsString = "Press Space to play, Escape to exit";
-        int idx = 4; // idx를 변수로 받아와서 지정해줘야 합니다!!
+        int idx = selectedIndex; // idx를 변수로 받아와서 지정해줘야 합니다!!
 
         drawExitButton();
 

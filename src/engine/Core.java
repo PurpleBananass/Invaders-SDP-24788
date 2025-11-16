@@ -28,7 +28,7 @@ public final class Core {
     private static final int FPS = 60;
 
     /** Lives per player (used to compute team pool in shared mode). */
-    private static final int MAX_LIVES = 100;
+    private static final int MAX_LIVES = 3;
     private static final int EXTRA_LIFE_FRECUENCY = 3;
 
     /** Frame to draw the screen on. */
@@ -39,6 +39,7 @@ public final class Core {
     private static Handler fileHandler;
     private static ConsoleHandler consoleHandler;
     private static int NUM_LEVELS; // Total number of levels
+    private static int currentLevel = 1 ;
 
     /**
      * Test implementation.
@@ -101,13 +102,9 @@ public final class Core {
 
                     break;
 
-// src/engine/Core.java 의 main 메소드 내부
-
-// src/engine/Core.java 의 main 메소드 내부
-
                 case 2:
                     // 2P mode: building gameState now using user choice
-                    gameState = new GameState(6, MAX_LIVES, coopSelected, 0);
+                    gameState = new GameState(currentLevel, MAX_LIVES, coopSelected, 0);
 
                     // [ ... case 2: ... ]
                     do {
@@ -116,7 +113,21 @@ public final class Core {
                         boolean bonusLife = gameState.getLevel() % EXTRA_LIFE_FRECUENCY == 0
                                 && gameState.getLivesRemaining() < teamCap;
 
-                        int currentLevel = gameState.getLevel();
+                        currentLevel = gameState.getLevel();
+
+                        // 레벨 시작 전마다 MapScreen을 띄웁니다.
+                        currentScreen = new MapScreen(width, height, FPS, currentLevel) ;
+                        returnCode = frame.setScreen(currentScreen) ;
+
+                        // 레벨 시작 전마다 StoryScreen을 띄웁니다.
+                        currentScreen = new StoryScreen(width, height, FPS, currentLevel) ;
+                        returnCode = frame.setScreen(currentScreen) ;
+
+                        // esc 버튼을 누르면 TitleScreen으로 이동합니다.
+                        if (returnCode == 1) {
+                            returnCode = 9 ;
+                            break;
+                        }
 
                         if (currentLevel == gameSettings.size() + 1) { // 보스 레벨
                             currentScreen = new BossScreen(
@@ -125,7 +136,7 @@ public final class Core {
 
                             LOGGER.info("Starting Boss Screen.");
 
-                        } else if (currentLevel <= gameSettings.size()) { // 일반 레벨
+                        } else if (currentLevel <= gameSettings.size()) { // 일반 레벨 : MapScreen -> GameScreen
                             currentScreen = new GameScreen(
                                     gameState,
                                     gameSettings.get(currentLevel - 1),
@@ -169,7 +180,8 @@ public final class Core {
                             + gameState.getLivesRemaining() + " lives remaining, "
                             + gameState.getBulletsShot() + " bullets shot and "
                             + gameState.getShipsDestroyed() + " ships destroyed.");
-                    currentScreen = new ScoreScreen(width, height, FPS, gameState, achievementManager);
+                    if ( returnCode != 9 ) // MapScreen에서 도중 나갔을 경우 ScoreScreen은 표시되지 않습니다.
+                        currentScreen = new ScoreScreen(width, height, FPS, gameState, achievementManager);
                     returnCode = frame.setScreen(currentScreen);
                     LOGGER.info("Closing score screen.");
                     break;
