@@ -126,7 +126,7 @@ public final class DrawManager {
         ItemScoreBooster,
 
         ITEM_BULLET_SPEEDUP,
-        Boss,
+        BOSS,
 
         /** 레벨 나타내는 틀*/
         LEVEL_FRAME,
@@ -181,7 +181,7 @@ public final class DrawManager {
             spriteMap.put(SpriteType.PLANET1, new boolean[8][10]);
             spriteMap.put(SpriteType.PLANET2, new boolean[10][10]);
             spriteMap.put(SpriteType.PLANET3, new boolean[17][10]);
-            spriteMap.put(SpriteType.Boss, new boolean[50][30]);
+            spriteMap.put(SpriteType.BOSS, new boolean[50][30]);
 
             fileManager.loadSprite(spriteMap);
             logger.info("Finished loading the sprites.");
@@ -240,7 +240,7 @@ public final class DrawManager {
 
         fontRegularMetrics = backBufferGraphics.getFontMetrics(fontRegular);
         fontBigMetrics = backBufferGraphics.getFontMetrics(fontBig);
-        fontSmallMetrics = backBufferGraphics.getFontMetrics(fontSmall);
+        this.fontSmallMetrics = backBufferGraphics.getFontMetrics(fontSmall);
 
         // drawBorders(screen);
         // drawGrid(screen);

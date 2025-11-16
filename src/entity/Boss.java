@@ -75,7 +75,7 @@ public class Boss extends Entity {
         this.spawnHP2Group = spawnHP2Group;
         this.clearShield = clearShield;
         this.onPhase2Start = onPhase2Start;
-        this.spriteType = SpriteType.Boss;
+        this.spriteType = SpriteType.BOSS;
         this.screenWidth = screenWidth;
 
         // 시작: P1 방패(HP1) 5기
