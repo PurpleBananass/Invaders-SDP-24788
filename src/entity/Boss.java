@@ -255,11 +255,11 @@ public class Boss extends Entity {
         this.fireEveryFramesP2 = Math.max(1, n);
     }
 
-    public void setSpeedP1_pxPerFrame(final int v) {
+    public void setSpeedP1PxPerFrame(final int v) {
         this.speedP1_pxPerFrame = v;
     }
 
-    public void setSpeedP2_pxPerFrame(final int v) {
+    public void setSpeedP2PxPerFrame(final int v) {
         this.speedP2_pxPerFrame = v;
     }
 }

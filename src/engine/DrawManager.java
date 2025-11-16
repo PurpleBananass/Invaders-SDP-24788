@@ -51,8 +51,6 @@ public final class DrawManager {
     private static Font fontRegular;
     /** Normal sized font properties. */
     private static FontMetrics fontRegularMetrics;
-    /** Small sized font. */
-    private static Font fontSmall;
     /** Big sized font. */
     private static Font fontBig;
     /** Big sized font properties. */
@@ -63,7 +61,7 @@ public final class DrawManager {
 
     private final java.util.List<Explosion> explosions = new java.util.ArrayList<>();
 
-    private final int SEPARATION_LINE_HEIGHT = 68;
+    private final static int separationLineHeight = 68;
 
     /**
      * Stars background animations for both game and main menu
@@ -187,7 +185,6 @@ public final class DrawManager {
             // Font loading.
             fontRegular = fileManager.loadFont(14f);
             fontBig = fileManager.loadFont(24f);
-            fontSmall = fileManager.loadFont(12f);
             logger.info("Finished loading the fonts.");
 
         } catch (IOException e) {
@@ -1560,7 +1557,7 @@ public final class DrawManager {
      * Boss's maximum HP.
      */
     public void drawBossHPBar(final Screen screen, final int currentHp, final int maxHp) {
-        int barY = SEPARATION_LINE_HEIGHT + 10; // 구분선(68)보다 10px 아래
+        int barY = separationLineHeight + 10; // 구분선(68)보다 10px 아래
         int barHeight = 15;
         int barWidth = screen.getWidth() - 40; // 좌우 여백 20px
         int barX = 20;
@@ -1588,7 +1585,6 @@ public final class DrawManager {
         backBufferGraphics.drawRect(barX, barY, barWidth, barHeight);
     }
     public void drawString(final Screen screen, final String text, final int x, final int y, final Color color) {
-        backBufferGraphics.setFont(fontSmall);
         backBufferGraphics.setColor(color);
         backBufferGraphics.drawString(text, x, y);
     }
