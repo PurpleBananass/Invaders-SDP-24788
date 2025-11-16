@@ -757,11 +757,11 @@ public class BossScreen extends Screen {
 
         // 2페이즈 메시지가 활성화 상태인지 확인 (노란색)
         if (this.phase2MsgCooldown != null && !this.phase2MsgCooldown.checkFinished()) {
-            drawManager.drawString(this, MSG_PHASE_2, x, y, java.awt.Color.YELLOW);
+            drawManager.drawString(MSG_PHASE_2, x, y, java.awt.Color.YELLOW);
         }
         // (else if 사용) 2페이즈 메시지가 아닐 때만 무적 메시지 확인 (하얀색)
         else if (this.invulnerableMsgCooldown != null && !this.invulnerableMsgCooldown.checkFinished()) {
-            drawManager.drawString(this, MSG_MINIONS_FIRST, x, y, java.awt.Color.WHITE);
+            drawManager.drawString(MSG_MINIONS_FIRST, x, y, java.awt.Color.WHITE);
         }
     }
 

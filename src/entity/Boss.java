@@ -6,7 +6,7 @@ import engine.DrawManager.SpriteType;
 
 public class Boss extends Entity {
 
-    private final int maxHp = 10;
+    private static final int MAX_HP = 10;
     private int hp = 10;
     private BossPhase phase = BossPhase.P1;
     /** 매 update마다 쫄몹 수로 다시 계산되는 무적 여부. */
@@ -15,9 +15,9 @@ public class Boss extends Entity {
     // ===== 이동/발사 파라미터 =====
     // 한 번 이동할 때의 "배수" 느낌으로 사용 (실제 이동량 = X_SPEED * speedP? )
     /** P1 이동 배율. */
-    private int speedP1_pxPerFrame = 1;
+    private int speedP1PxPerFrame = 1;
     /** P2 이동 배율. */
-    private int speedP2_pxPerFrame = 1;
+    private int speedP2PxPerFrame = 1;
 
     // 프레임 카운터 방식: N프레임마다 발사
     /** P1 페이즈에서 N프레임마다 발사. */
@@ -42,7 +42,7 @@ public class Boss extends Entity {
 
     // 화면 정보 & 이동 관련
     private final int screenWidth;
-    private final int marginX = 10;
+    private static final int MARGIN_X = 10;
 
     // EnemyShipFormation 비슷한 이동용 필드
     private enum Direction { RIGHT, LEFT }
@@ -55,7 +55,7 @@ public class Boss extends Entity {
     /** P2 페이즈에서 movementInterval이 이 값에 도달할 때마다 한 번 이동. */
     private int movementSpeedP2 = 80;
     /** 한 번 이동할 때 기본 이동 거리(픽셀). 여기에 speedP? 배율이 곱해짐. */
-    private final int X_SPEED = 8;
+    private static final int X_SPEED = 8;
 
 
     // ===== 생성 =====
@@ -116,7 +116,7 @@ public class Boss extends Entity {
         this.hp -= dmg;
 
         // HP가 절반 이하로 떨어지는 시점에 P2 진입
-        if (this.hp <= this.maxHp / 2 && this.phase == BossPhase.P1) {
+        if (this.hp <= this.MAX_HP / 2 && this.phase == BossPhase.P1) {
             enterP2();
         }
 
@@ -204,7 +204,7 @@ public class Boss extends Entity {
         this.movementInterval = 0;
 
         // 현재 페이즈에 따른 속도 배율 적용
-        int speed = (this.phase == BossPhase.P1 ? this.speedP1_pxPerFrame : this.speedP2_pxPerFrame);
+        int speed = (this.phase == BossPhase.P1 ? this.speedP1PxPerFrame : this.speedP2PxPerFrame);
 
         // 지금 방향 기준으로 한 번에 움직일 거리 계산
         int movementX = (this.currentDirection == Direction.RIGHT ? this.X_SPEED * speed : -this.X_SPEED * speed);
@@ -212,17 +212,17 @@ public class Boss extends Entity {
         int candidateX = this.positionX + movementX;
 
         // 화면 경계 체크
-        boolean isAtLeftSide = candidateX <= this.marginX;
-        boolean isAtRightSide = candidateX + this.getWidth() >= this.screenWidth - this.marginX;
+        boolean isAtLeftSide = candidateX <= this.MARGIN_X;
+        boolean isAtRightSide = candidateX + this.getWidth() >= this.screenWidth - this.MARGIN_X;
 
         if (isAtLeftSide) {
             // 왼쪽 벽에 닿으면 오른쪽으로 방향 전환
             this.currentDirection = Direction.RIGHT;
-            candidateX = this.marginX;  // 벽 안으로 딱 붙여줌
+            candidateX = this.MARGIN_X;  // 벽 안으로 딱 붙여줌
         } else if (isAtRightSide) {
             // 오른쪽 벽에 닿으면 왼쪽으로 방향 전환
             this.currentDirection = Direction.LEFT;
-            candidateX = this.screenWidth - this.marginX - this.getWidth();
+            candidateX = this.screenWidth - this.MARGIN_X - this.getWidth();
         }
 
         // 최종 위치 적용
@@ -235,7 +235,7 @@ public class Boss extends Entity {
     }
 
     public int getMaxHp() {
-        return this.maxHp;
+        return this.MAX_HP;
     }
 
     public BossPhase getPhase() {
@@ -256,10 +256,10 @@ public class Boss extends Entity {
     }
 
     public void setSpeedP1PxPerFrame(final int v) {
-        this.speedP1_pxPerFrame = v;
+        this.speedP1PxPerFrame = v;
     }
 
     public void setSpeedP2PxPerFrame(final int v) {
-        this.speedP2_pxPerFrame = v;
+        this.speedP2PxPerFrame = v;
     }
 }

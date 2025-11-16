@@ -61,7 +61,7 @@ public final class DrawManager {
 
     private final java.util.List<Explosion> explosions = new java.util.ArrayList<>();
 
-    private final static int SEPARATION_LINE_HEIGHT = 68;
+    private static final int SEPARATION_LINE_HEIGHT = 68;
 
     /**
      * Stars background animations for both game and main menu
@@ -1584,7 +1584,7 @@ public final class DrawManager {
         backBufferGraphics.setColor(Color.WHITE);
         backBufferGraphics.drawRect(barX, barY, barWidth, barHeight);
     }
-    public void drawString(final Screen screen, final String text, final int x, final int y, final Color color) {
+    public void drawString(final String text, final int x, final int y, final Color color) {
         backBufferGraphics.setColor(color);
         backBufferGraphics.drawString(text, x, y);
     }
