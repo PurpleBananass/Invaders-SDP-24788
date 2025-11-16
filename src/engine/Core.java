@@ -117,6 +117,13 @@ public final class Core {
 
                         // 레벨 시작 전마다 MapScreen을 띄웁니다.
                         currentScreen = new MapScreen(width, height, FPS, currentLevel) ;
+                        returnCode = frame.setScreen(currentScreen) ;
+
+                        // esc 버튼을 누르면 TitleScreen으로 이동합니다.
+                        if (returnCode == 1) {
+                            returnCode = 9 ;
+                            break;
+                        }
 
                         // 레벨 시작 전마다 StoryScreen을 띄웁니다.
                         currentScreen = new StoryScreen(width, height, FPS, currentLevel) ;
@@ -141,7 +148,7 @@ public final class Core {
                                     gameSettings.get(currentLevel - 1),
                                     bonusLife, width, height, FPS, shipTypeP1, shipTypeP2, achievementManager);
 
-                            LOGGER.info(String.format("Starting Game Screen Level %d",  currentLevel));
+                            LOGGER.info("Starting Game Screen Level " + currentLevel);
 
                         } else {
                             // 모든 레벨과 보스를 클리어함
@@ -155,6 +162,7 @@ public final class Core {
 
                         // 2. 게임 도중 메뉴로 나갔을 경우 (Pause -> Backspace)
                         if (returnCode == 1) {
+                            returnCode = 10;
                             break;
                         }
 
@@ -179,9 +187,12 @@ public final class Core {
                             + gameState.getLivesRemaining() + " lives remaining, "
                             + gameState.getBulletsShot() + " bullets shot and "
                             + gameState.getShipsDestroyed() + " ships destroyed.");
-                    if ( returnCode != 9 ) // MapScreen에서 도중 나갔을 경우 ScoreScreen은 표시되지 않습니다.
+                    if ( returnCode < 9 ) { // 도중 나갔을 경우 ScoreScreen은 표시되지 않습니다.
                         currentScreen = new ScoreScreen(width, height, FPS, gameState, achievementManager);
-                    returnCode = frame.setScreen(currentScreen);
+                        returnCode = frame.setScreen(currentScreen);
+                    } else if ( returnCode == 9 ) { // 게임 플레이 도중 나갔을 경우 MapScreen으로 돌아갑니다.
+                        returnCode = 1;
+                    } else returnCode = 2; // MapScreen에서 도중 나갔을 경우 TitleScreen으로 돌아갑니다.
                     LOGGER.info("Closing score screen.");
                     break;
 
