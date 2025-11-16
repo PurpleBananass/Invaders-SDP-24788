@@ -117,7 +117,6 @@ public final class Core {
 
                         // 레벨 시작 전마다 MapScreen을 띄웁니다.
                         currentScreen = new MapScreen(width, height, FPS, currentLevel) ;
-                        returnCode = frame.setScreen(currentScreen) ;
 
                         // 레벨 시작 전마다 StoryScreen을 띄웁니다.
                         currentScreen = new StoryScreen(width, height, FPS, currentLevel) ;

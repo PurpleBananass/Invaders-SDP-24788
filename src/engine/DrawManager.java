@@ -61,7 +61,7 @@ public final class DrawManager {
 
     private final java.util.List<Explosion> explosions = new java.util.ArrayList<>();
 
-    private final static int separationLineHeight = 68;
+    private final static int SEPARATION_LINE_HEIGHT = 68;
 
     /**
      * Stars background animations for both game and main menu
@@ -1557,7 +1557,7 @@ public final class DrawManager {
      * Boss's maximum HP.
      */
     public void drawBossHPBar(final Screen screen, final int currentHp, final int maxHp) {
-        int barY = separationLineHeight + 10; // 구분선(68)보다 10px 아래
+        int barY = SEPARATION_LINE_HEIGHT + 10; // 구분선(68)보다 10px 아래
         int barHeight = 15;
         int barWidth = screen.getWidth() - 40; // 좌우 여백 20px
         int barX = 20;
