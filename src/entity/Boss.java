@@ -116,7 +116,7 @@ public class Boss extends Entity {
         this.hp -= dmg;
 
         // HP가 절반 이하로 떨어지는 시점에 P2 진입
-        if (this.hp <= this.MAX_HP / 2 && this.phase == BossPhase.P1) {
+        if (this.hp <= MAX_HP / 2 && this.phase == BossPhase.P1) {
             enterP2();
         }
 
@@ -207,13 +207,13 @@ public class Boss extends Entity {
         int speed = (this.phase == BossPhase.P1 ? this.speedP1PxPerFrame : this.speedP2PxPerFrame);
 
         // 지금 방향 기준으로 한 번에 움직일 거리 계산
-        int movementX = (this.currentDirection == Direction.RIGHT ? this.X_SPEED * speed : -this.X_SPEED * speed);
+        int movementX = (this.currentDirection == Direction.RIGHT ? this.X_SPEED * speed : -X_SPEED * speed);
 
         int candidateX = this.positionX + movementX;
 
         // 화면 경계 체크
-        boolean isAtLeftSide = candidateX <= this.MARGIN_X;
-        boolean isAtRightSide = candidateX + this.getWidth() >= this.screenWidth - this.MARGIN_X;
+        boolean isAtLeftSide = candidateX <= MARGIN_X;
+        boolean isAtRightSide = candidateX + this.getWidth() >= this.screenWidth - MARGIN_X;
 
         if (isAtLeftSide) {
             // 왼쪽 벽에 닿으면 오른쪽으로 방향 전환
@@ -222,7 +222,7 @@ public class Boss extends Entity {
         } else if (isAtRightSide) {
             // 오른쪽 벽에 닿으면 왼쪽으로 방향 전환
             this.currentDirection = Direction.LEFT;
-            candidateX = this.screenWidth - this.MARGIN_X - this.getWidth();
+            candidateX = this.screenWidth - MARGIN_X - this.getWidth();
         }
 
         // 최종 위치 적용
@@ -235,7 +235,7 @@ public class Boss extends Entity {
     }
 
     public int getMaxHp() {
-        return this.MAX_HP;
+        return MAX_HP;
     }
 
     public BossPhase getPhase() {

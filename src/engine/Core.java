@@ -167,11 +167,11 @@ public final class Core {
                         }
 
                         // 3. 실행된 스크린의 최신 gameState를 가져옴
-                        if (currentScreen instanceof GameScreen) {
-                            gameState = ((GameScreen) currentScreen).getGameState();
-                        } else if (currentScreen instanceof BossScreen) {
+                        if (currentScreen instanceof GameScreen gameScreen) {
+                            gameState = gameScreen.getGameState();
+                        } else if (currentScreen instanceof BossScreen bossScreen) {
                             // BossScreen.java에도 getGameState()가 구현되어 있어야 합니다.
-                            gameState = ((BossScreen) currentScreen).getGameState();
+                            gameState = bossScreen.getGameState();
                         }
                         // ===================================
 
