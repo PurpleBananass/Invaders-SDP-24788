@@ -207,7 +207,7 @@ public class Boss extends Entity {
         int speed = (this.phase == BossPhase.P1 ? this.speedP1PxPerFrame : this.speedP2PxPerFrame);
 
         // 지금 방향 기준으로 한 번에 움직일 거리 계산
-        int movementX = (this.currentDirection == Direction.RIGHT ? this.X_SPEED * speed : -X_SPEED * speed);
+        int movementX = (this.currentDirection == Direction.RIGHT ? X_SPEED * speed : -X_SPEED * speed);
 
         int candidateX = this.positionX + movementX;
 
@@ -218,7 +218,7 @@ public class Boss extends Entity {
         if (isAtLeftSide) {
             // 왼쪽 벽에 닿으면 오른쪽으로 방향 전환
             this.currentDirection = Direction.RIGHT;
-            candidateX = this.MARGIN_X;  // 벽 안으로 딱 붙여줌
+            candidateX = MARGIN_X;  // 벽 안으로 딱 붙여줌
         } else if (isAtRightSide) {
             // 오른쪽 벽에 닿으면 왼쪽으로 방향 전환
             this.currentDirection = Direction.LEFT;

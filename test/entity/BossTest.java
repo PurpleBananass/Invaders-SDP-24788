@@ -187,6 +187,6 @@ public class BossTest {
                 spawnHP1, spawnHP2, clearShield, onPhase2Start);
         nullBoss.setFireEveryFramesP1(1);
 
-        assertDoesNotThrow(() -> nullBoss.update());
+        assertDoesNotThrow(nullBoss::update);
     }
 }
