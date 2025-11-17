@@ -69,7 +69,7 @@ public class BossScreen extends Screen {
     /** Checks if the level is finished. */
     private boolean levelFinished;
     /** Logger instance. */
-    private static final Logger logger = Core.getLogger();
+    private static final Logger bossScreenLogger = Core.getLogger();
 
     /** Checks if the game is paused. */
     private boolean isPaused;
@@ -139,6 +139,7 @@ public class BossScreen extends Screen {
     /**
      * Initializes basic screen properties, and adds necessary elements.
      */
+    @Override
     public final void initialize() {
         super.initialize();
 
@@ -166,7 +167,7 @@ public class BossScreen extends Screen {
 
         // 2. Define Boss Callbacks
         Runnable spawnHP1Group = () -> {
-            logger.info("Boss spawning Phase 1 minions (5x2).");
+            bossScreenLogger.info("Boss spawning Phase 1 minions (5x2).");
             GameSettings minionSettings = new GameSettings(5, 2, 100, 2000); // 5x2
             this.minionFormation = new EnemyShipFormation(minionSettings);
             this.minionFormation.attach(this);
@@ -177,7 +178,7 @@ public class BossScreen extends Screen {
         };
 
         Runnable spawnHP2Group = () -> {
-            logger.info("Boss spawning Phase 2 minions (5x3).");
+            bossScreenLogger.info("Boss spawning Phase 2 minions (5x3).");
             GameSettings minionSettings = new GameSettings(5, 3, 90, 1500); // 5x3
             this.minionFormation = new EnemyShipFormation(minionSettings);
             this.minionFormation.attach(this);
@@ -188,7 +189,7 @@ public class BossScreen extends Screen {
         };
 
         Runnable clearShield = () -> {
-            logger.info("Boss clearing phase 1 minions.");
+            bossScreenLogger.info("Boss clearing phase 1 minions.");
             if (this.minionFormation != null) {
                 for (EnemyShip minion : this.minionFormation) {
                     minion.destroy();
@@ -198,7 +199,7 @@ public class BossScreen extends Screen {
         };
 
         Runnable onPhase2StartCallback = () -> {
-            logger.info("Boss entering Phase 2! Triggering message.");
+            bossScreenLogger.info("Boss entering Phase 2! Triggering message.");
             this.phase2MsgCooldown.reset();
         };
 
@@ -243,6 +244,7 @@ public class BossScreen extends Screen {
      *
      * @return Next screen code.
      */
+    @Override
     public final int run() {
         super.run();
 
@@ -252,7 +254,7 @@ public class BossScreen extends Screen {
         // Stop all music on exiting this screen
         SoundManager.stopAllMusic();
 
-        logger.info("Boss Screen cleared with a score of " + state.getScore());
+        bossScreenLogger.info("Boss Screen cleared with a score of " + state.getScore());
         return this.returnCode;
     }
 
@@ -277,7 +279,7 @@ public class BossScreen extends Screen {
             checkInGameAchievements();
 
             if (!state.teamAlive() && !this.levelFinished) {
-                logger.info("Player team is defeated on Boss Screen.");
+                bossScreenLogger.info("Player team is defeated on Boss Screen.");
 
                 // 게임 오버 시퀀스 트리거
                 this.levelFinished = true;
@@ -427,7 +429,7 @@ public class BossScreen extends Screen {
     private void handleEndOfLevel() {
         // End Condition: Boss HP <= 0
         if (this.boss != null && this.boss.getHp() <= 0 && !this.levelFinished) {
-            logger.info("Boss defeated!");
+            bossScreenLogger.info("Boss defeated!");
 
             // Recycle entities
             BulletPool.recycle(this.bullets);
@@ -451,11 +453,11 @@ public class BossScreen extends Screen {
             }
             int totalHitsLanded = state.getShipsDestroyed() + this.boss.getMaxHp();
             int totalBulletsShot = state.getBulletsShot();
-            double Accuracy = 0.0;
+            double accuracy = 0.0;
             if (totalBulletsShot > 0) {
-                Accuracy = (double) totalHitsLanded / (double) totalBulletsShot;
+                accuracy = (double) totalHitsLanded / (double) totalBulletsShot;
             }
-            if (Accuracy >= 0.8) {
+            if (accuracy >= 0.8) {
                 achievementManager.unlock("Sharpshooter");
             }
             if(totalBulletsShot > 0 && totalBulletsShot == totalHitsLanded){
@@ -464,10 +466,8 @@ public class BossScreen extends Screen {
         }
 
         // Screen transition
-        if (this.levelFinished && this.screenFinishedCooldown.checkFinished()) {
-            if (!achievementManager.hasPendingToasts()) {
+        if (this.levelFinished && this.screenFinishedCooldown.checkFinished() && !achievementManager.hasPendingToasts() ) {
                 this.isRunning = false;
-            }
         }
     }
 
@@ -600,7 +600,7 @@ public class BossScreen extends Screen {
                 }
                 if (checkCollision(item, ship) && !collected.contains(item)) {
                     collected.add(item);
-                    logger.info("Player " + ship.getPlayerId() + " picked up item: " + item.getType());
+                    bossScreenLogger.info("Player " + ship.getPlayerId() + " picked up item: " + item.getType());
                     SoundManager.playOnce(SOUND_HOVER);
                     item.applyEffect(getGameState(), ship.getPlayerId());
                 }
@@ -639,7 +639,7 @@ public class BossScreen extends Screen {
                         this.tookDamageThisLevel = true;
                         drawManager.setLastLife(state.getLivesRemaining() == 1);
                         drawManager.setDeath(state.getLivesRemaining() == 0);
-                        logger.info("Hit on player " + (p + 1));
+                        bossScreenLogger.info("Hit on player " + (p + 1));
                         break; // Bullet hits one player
                     }
                 }
@@ -757,11 +757,11 @@ public class BossScreen extends Screen {
 
         // 2페이즈 메시지가 활성화 상태인지 확인 (노란색)
         if (this.phase2MsgCooldown != null && !this.phase2MsgCooldown.checkFinished()) {
-            drawManager.drawString(this, MSG_PHASE_2, x, y, java.awt.Color.YELLOW);
+            drawManager.drawString(MSG_PHASE_2, x, y, java.awt.Color.YELLOW);
         }
         // (else if 사용) 2페이즈 메시지가 아닐 때만 무적 메시지 확인 (하얀색)
         else if (this.invulnerableMsgCooldown != null && !this.invulnerableMsgCooldown.checkFinished()) {
-            drawManager.drawString(this, MSG_MINIONS_FIRST, x, y, java.awt.Color.WHITE);
+            drawManager.drawString(MSG_MINIONS_FIRST, x, y, java.awt.Color.WHITE);
         }
     }
 

@@ -132,7 +132,7 @@ public class BossTest {
         boss.update();
         boss.onHit(6);
 
-        boss.setSpeedP2_pxPerFrame(3);
+        boss.setSpeedP2PxPerFrame(3);
         int expectedSpeed = 8 * 3;
         int initialX = boss.getPositionX();
 
@@ -187,6 +187,6 @@ public class BossTest {
                 spawnHP1, spawnHP2, clearShield, onPhase2Start);
         nullBoss.setFireEveryFramesP1(1);
 
-        assertDoesNotThrow(() -> nullBoss.update());
+        assertDoesNotThrow(nullBoss::update);
     }
 }

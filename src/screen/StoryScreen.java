@@ -1,14 +1,15 @@
 package screen;
 
-import engine.GameState ;
+import engine.GameState;
 import engine.SoundManager;
 
 import java.awt.event.KeyEvent;
 
-public class MapScreen extends Screen {
+public class StoryScreen extends Screen {
 
     static final GameState gameState = null;
     static final GameScreen currentScreen = null;
+    private final int currentLevel ;
 
     /**
      * Constructor, establishes the properties of the screen.
@@ -18,16 +19,13 @@ public class MapScreen extends Screen {
      * @param fps           Frames per second, frame rate at which the game is run.
      * @param currentLevel  현재 스테이지 인덱스.
      */
-    public MapScreen(int width, int height, int fps, int currentLevel) {
+    public StoryScreen(int width, int height, int fps, int currentLevel) {
         super(width, height, fps);
         this.currentLevel = currentLevel;
         this.returnCode = 1;
 
         SoundManager.playLoop("sound/menu_sound.wav");
     }
-
-    /** 현재스테이지 인덱스 */
-    private final int currentLevel ;
 
     @Override
     public final int run() {
@@ -40,9 +38,6 @@ public class MapScreen extends Screen {
     protected final void update() {
         super.update();
 
-        draw();
-
-        // 키 입력
         if (this.inputDelay.checkFinished()) {
             if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
                 this.returnCode = 5;  // go to PlayScreen
@@ -52,13 +47,12 @@ public class MapScreen extends Screen {
                 this.isRunning = false;
             }
         }
+        draw();
     }
 
     private void draw() {
         drawManager.initDrawing(this);
-        drawManager.drawMap(this, this.currentLevel);
-        drawManager.drawMapBackground();
+        drawManager.drawStory(this, this.currentLevel);
         drawManager.completeDrawing(this);
     }
-
 }

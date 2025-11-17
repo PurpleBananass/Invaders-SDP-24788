@@ -51,10 +51,6 @@ public final class DrawManager {
     private static Font fontRegular;
     /** Normal sized font properties. */
     private static FontMetrics fontRegularMetrics;
-    /** Small sized font. */
-    private static Font fontSmall;
-    /** Small sized font properties. */
-    private static FontMetrics fontSmallMetrics;
     /** Big sized font. */
     private static Font fontBig;
     /** Big sized font properties. */
@@ -65,7 +61,7 @@ public final class DrawManager {
 
     private final java.util.List<Explosion> explosions = new java.util.ArrayList<>();
 
-    private final int SEPARATION_LINE_HEIGHT = 68;
+    private static final int SEPARATION_LINE_HEIGHT = 68;
 
     /**
      * Stars background animations for both game and main menu
@@ -126,7 +122,7 @@ public final class DrawManager {
         ItemScoreBooster,
 
         ITEM_BULLET_SPEEDUP,
-        Boss,
+        BOSS,
 
         /** 레벨 나타내는 틀*/
         LEVEL_FRAME,
@@ -181,7 +177,7 @@ public final class DrawManager {
             spriteMap.put(SpriteType.PLANET1, new boolean[8][10]);
             spriteMap.put(SpriteType.PLANET2, new boolean[10][10]);
             spriteMap.put(SpriteType.PLANET3, new boolean[17][10]);
-            spriteMap.put(SpriteType.Boss, new boolean[50][30]);
+            spriteMap.put(SpriteType.BOSS, new boolean[50][30]);
 
             fileManager.loadSprite(spriteMap);
             logger.info("Finished loading the sprites.");
@@ -189,7 +185,6 @@ public final class DrawManager {
             // Font loading.
             fontRegular = fileManager.loadFont(14f);
             fontBig = fileManager.loadFont(24f);
-            fontSmall = fileManager.loadFont(12f);
             logger.info("Finished loading the fonts.");
 
         } catch (IOException e) {
@@ -240,7 +235,6 @@ public final class DrawManager {
 
         fontRegularMetrics = backBufferGraphics.getFontMetrics(fontRegular);
         fontBigMetrics = backBufferGraphics.getFontMetrics(fontBig);
-        fontSmallMetrics = backBufferGraphics.getFontMetrics(fontSmall);
 
         // drawBorders(screen);
         // drawGrid(screen);
@@ -750,6 +744,13 @@ public final class DrawManager {
          * 2 + spacing * 3); */
     }
 
+    public void drawStory(final Screen screen, final int selectedIndex) {
+        String string = "story here! (level" + selectedIndex + ")" ;
+
+        backBufferGraphics.setColor(Color.GRAY);
+        drawCenteredBigString(screen, string, screen.getHeight() / 6 + 100);
+    }
+
     /**
      * Draws map.
      *
@@ -762,7 +763,7 @@ public final class DrawManager {
         String[] items = {"BOSS", "level 5", "level 4","level 3", "level 2", "level 1"};
         String titleString = "save earth!";
         String instructionsString = "Press Space to play, Escape to exit";
-        int idx = 4; // idx를 변수로 받아와서 지정해줘야 합니다!!
+        int idx = selectedIndex; // idx를 변수로 받아와서 지정해줘야 합니다!!
 
         drawExitButton();
 
@@ -1583,8 +1584,7 @@ public final class DrawManager {
         backBufferGraphics.setColor(Color.WHITE);
         backBufferGraphics.drawRect(barX, barY, barWidth, barHeight);
     }
-    public void drawString(final Screen screen, final String text, final int x, final int y, final Color color) {
-        backBufferGraphics.setFont(fontSmall);
+    public void drawString(final String text, final int x, final int y, final Color color) {
         backBufferGraphics.setColor(color);
         backBufferGraphics.drawString(text, x, y);
     }
