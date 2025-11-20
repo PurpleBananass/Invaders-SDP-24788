@@ -758,6 +758,17 @@ public class GameScreen extends Screen {
     // Revive Prompt Input Handler
     // ----------------------------
     private void handleRevivePromptInput() {
+
+        if (state.isSharedLives()) {
+            int now = state.getTeamLives();
+            int give = 6 - now;
+            if (give > 0) state.addTeamLife(give);
+        } else {
+            int now = state.get1PlayerLives();
+            int give = 3 - now;
+            if (give > 0) state.addLife(0, give);
+        }
+
         if (inputManager.isKeyDown(KeyEvent.VK_UP)) {
             reviveSelection = 0; // YES
         }
@@ -798,6 +809,9 @@ public class GameScreen extends Screen {
         if (inputManager.isKeyDown(KeyEvent.VK_ENTER) ||
                 inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
 
+
+
+
             this.returnCode = 1;
             this.isRunning = false;
         }
@@ -815,15 +829,6 @@ public class GameScreen extends Screen {
         }
 
 
-        if (state.isSharedLives()) {
-            int now = state.getTeamLives();
-            int give = 6 - now;
-            if (give > 0) state.addTeamLife(give);
-        } else {
-            int now = state.get1PlayerLives();
-            int give = 3 - now;
-            if (give > 0) state.addLife(0, give);
-        }
 
 
         this.levelFinished = false;

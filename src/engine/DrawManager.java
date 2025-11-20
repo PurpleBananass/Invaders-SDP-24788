@@ -1618,14 +1618,14 @@ public final class DrawManager {
 
         backBufferGraphics.setColor(Color.RED);
         backBufferGraphics.setFont(fontBig);
-        drawCenteredBigString(screen, "부활 실패!", screen.getHeight()/2 - 40);
+        drawCenteredBigString(screen, "Failure", screen.getHeight()/2 - 40);
 
         backBufferGraphics.setFont(fontRegular);
         backBufferGraphics.setColor(Color.WHITE);
         drawCenteredRegularString(screen, reason, screen.getHeight()/2);
 
         drawCenteredRegularString(screen,
-                "ENTER를 눌러 레벨 선택으로 돌아가기",
+                "ENTER",
                 screen.getHeight()/2 + 40);
     }
 
