@@ -12,6 +12,8 @@ public class BossTimer {
     public BossTimer(TimeProvider timeProvider) {
         this.timeProvider = timeProvider;
         this.isRunning = false;
+        this.startTime = 0;
+        this.endTime = 0;
     }
 
     /**
@@ -19,7 +21,10 @@ public class BossTimer {
      * TODO: 6스테이지(BOSS_LEVEL)일 때만 타이머가 시작되도록 구현해야 함
      */
     public void start(int currentLevel) {
-        // 구현 내용 없음 (테스트 실패 유도)
+        if(currentLevel == BOSS_LEVEL) {
+            this.startTime = timeProvider.getCurrentTime();
+            this.isRunning = true;
+        }
     }
 
     /**
@@ -27,7 +32,10 @@ public class BossTimer {
      * TODO: 실행 중일 때만 종료 시간을 기록하고 멈추도록 구현해야 함
      */
     public void stop() {
-        // 구현 내용 없음
+        if(this.isRunning) {
+            this.endTime = timeProvider.getCurrentTime();
+            this.isRunning = false;
+        }
     }
 
     /**
@@ -35,7 +43,13 @@ public class BossTimer {
      * TODO: 시작 시간과 종료 시간을 계산하여 반환해야 함
      */
     public long getDuration() {
-        return 0; // 임시 반환값
+        if(this.isRunning) {
+            return timeProvider.getCurrentTime() - this.startTime;
+        }
+        if (startTime == 0) {
+            return 0;
+        }
+        return endTime - startTime;
     }
 
     /**
