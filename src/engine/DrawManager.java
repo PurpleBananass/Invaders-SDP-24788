@@ -538,7 +538,39 @@ public final class DrawManager {
         backBufferGraphics.setFont(fontRegular);
         backBufferGraphics.setColor(Color.WHITE);
         String scoreString = String.format("%04d", score);
-        backBufferGraphics.drawString(scoreString, screen.getWidth() - 60, 25);
+        backBufferGraphics.drawString(scoreString, screen.getWidth() - 60, 75);
+    }
+
+    /**
+     * Draws per-player scores on screen for 2-player mode.
+     *
+     * @param screen
+     *               Screen to draw on.
+     * @param scoreP1
+     *               Player 1 score.
+     * @param scoreP2
+     *               Player 2 score.
+     * @param isCoop
+     *               Whether the game is in co-op mode.
+     */
+    public void drawScore(final Screen screen, final int scoreP1, final int scoreP2, final boolean isCoop) {
+        backBufferGraphics.setFont(fontRegular);
+        backBufferGraphics.setColor(Color.WHITE);
+        
+        if (isCoop) {
+            // Display P1 score on the left side, under the green line
+            String scoreP1String = String.format("P1: %04d", scoreP1);
+            backBufferGraphics.drawString(scoreP1String, 20, 90);
+            
+            // Display P2 score on the right side, under the green line
+            String scoreP2String = String.format("P2: %04d", scoreP2);
+            int p2X = screen.getWidth() - 20 - backBufferGraphics.getFontMetrics().stringWidth(scoreP2String);
+            backBufferGraphics.drawString(scoreP2String, p2X, 90);
+        } else {
+            // Single player mode: show only P1 score under the green line
+            String scoreString = String.format("%04d", scoreP1);
+            backBufferGraphics.drawString(scoreString, screen.getWidth() - 60, 75);
+        }
     }
 
 	/**
