@@ -89,10 +89,6 @@ public class GameScreen extends Screen {
     private int shipsDestroyed;
     private Ship ship;
 
-    private static final int COOP_DIVIDER_WIDTH = 2;
-    private final int coopDividerX;
-    private final int coopDividerHalfWidth;
-
     /** checks if player took damage
      * 2025-10-02 add new variable
      * */
@@ -143,8 +139,6 @@ public class GameScreen extends Screen {
             this.lives++;
         this.bulletsShot = gameState.getBulletsShot();
         this.shipsDestroyed = gameState.getShipsDestroyed();
-        this.coopDividerX = width / 2;
-        this.coopDividerHalfWidth = COOP_DIVIDER_WIDTH / 2;
 
         // for check Achievement 2025-10-02 add
         this.achievementManager = achievementManager;
@@ -305,27 +299,13 @@ public class GameScreen extends Screen {
                         fire = inputManager.isP2ShootPressed();
                     }
 
-                    int nextRightX = ship.getPositionX() + ship.getSpeed();
-                    int nextLeftX = ship.getPositionX() - ship.getSpeed();
-                    int shipRightAfterMove = nextRightX + ship.getWidth();
+                    boolean isRightBorder = ship.getPositionX() + ship.getWidth() + ship.getSpeed() > this.width - 1;
 
-                    boolean hitsScreenRight = shipRightAfterMove > this.width - 1;
-                    boolean hitsScreenLeft = nextLeftX < 1;
+                    boolean isLeftBorder = ship.getPositionX() - ship.getSpeed() < 1;
 
-                    boolean hitsDividerRight = false;
-                    boolean hitsDividerLeft = false;
-
-                    if (state.isCoop()) {
-                        if (p == 0) {
-                            hitsDividerRight = shipRightAfterMove > this.coopDividerX - this.coopDividerHalfWidth;
-                        } else {
-                            hitsDividerLeft = nextLeftX < this.coopDividerX + this.coopDividerHalfWidth;
-                        }
-                    }
-
-                    if (moveRight && !hitsScreenRight && !hitsDividerRight)
+                    if (moveRight && !isRightBorder)
                         ship.moveRight();
-                    if (moveLeft && !hitsScreenLeft && !hitsDividerLeft)
+                    if (moveLeft && !isLeftBorder)
                         ship.moveLeft();
 
                     fire = (p == 0)
@@ -477,9 +457,6 @@ public class GameScreen extends Screen {
 //        }
         drawManager.drawLevel(this, this.state.getLevel());
 		drawManager.drawHorizontalLine(this, SEPARATION_LINE_HEIGHT - 1);
-        if (state.isCoop()) {
-            drawManager.drawCoopDivider(this, this.coopDividerX, SEPARATION_LINE_HEIGHT, COOP_DIVIDER_WIDTH);
-        }
         drawManager.drawShipCount(this, enemyShipFormation.getShipCount());
 
 		if (!this.inputDelay.checkFinished()) {

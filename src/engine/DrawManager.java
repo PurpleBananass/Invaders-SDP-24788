@@ -617,49 +617,6 @@ public final class DrawManager {
                 positionY + 1);
     }
 
-    /**
-     * Draws the co-op playfield divider as a thin white line (no background tint).
-     *
-     * @param screen     Screen to draw on.
-     * @param dividerX   X coordinate of the divider line.
-     * @param startY     Top Y coordinate where the divider should begin.
-     * @param lineWidth  Visual thickness in pixels (typically 2).
-     */
-    public void drawCoopDivider(final Screen screen, final int dividerX, final int startY, final int lineWidth) {
-        if (!(backBufferGraphics instanceof Graphics2D)) {
-            backBufferGraphics.setColor(Color.WHITE);
-            int half = Math.max(0, lineWidth / 2);
-            for (int dx = -half; dx < -half + lineWidth; dx++) {
-                int x = dividerX + dx;
-                backBufferGraphics.drawLine(x, startY, x, screen.getHeight());
-            }
-            return;
-        }
-
-        Graphics2D g2d = (Graphics2D) backBufferGraphics;
-        Composite originalComposite = g2d.getComposite();
-        Paint originalPaint = g2d.getPaint();
-
-        int playfieldHeight = screen.getHeight() - startY;
-
-        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.08f));
-        g2d.setPaint(new Color(64, 128, 255));
-        g2d.fillRect(0, startY, dividerX, playfieldHeight);
-
-        g2d.setPaint(new Color(220, 72, 72));
-        g2d.fillRect(dividerX, startY, screen.getWidth() - dividerX, playfieldHeight);
-
-        g2d.setComposite(originalComposite);
-        g2d.setPaint(originalPaint);
-
-        g2d.setColor(Color.WHITE);
-        int half = Math.max(0, lineWidth / 2);
-        for (int dx = -half; dx < -half + lineWidth; dx++) {
-            int x = dividerX + dx;
-            g2d.drawLine(x, startY, x, screen.getHeight());
-        }
-    }
-
     public void drawLevel (final Screen screen, final int level) {
         backBufferGraphics.setColor(Color.WHITE);
         String levelString = "Level " + level;
