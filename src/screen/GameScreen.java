@@ -239,14 +239,7 @@ public class GameScreen extends Screen {
         super.run();
 
         // 2P mode: award bonus score for remaining TEAM lives
-        // Split bonus equally between players in 2P mode, or give to P1 in 1P mode
-        if (state.isCoop()) {
-            int bonusPerPlayer = (LIFE_SCORE * state.getLivesRemaining()) / 2;
-            state.addScore(0, bonusPerPlayer);
-            state.addScore(1, bonusPerPlayer);
-        } else {
-            state.addScore(0, LIFE_SCORE * state.getLivesRemaining());
-        }
+        state.addScore(0, LIFE_SCORE * state.getLivesRemaining());
 
         // Stop all music on exiting this screen
         SoundManager.stopAllMusic();
@@ -464,12 +457,8 @@ public class GameScreen extends Screen {
             drawManager.drawEntity(item, item.getPositionX(),
                     item.getPositionY());
 
-		// Per-player scores in 2P mode, aggregate in 1P mode
-		if (state.isCoop()) {
-			drawManager.drawScore(this, state.getScore(0), state.getScore(1), true);
-		} else {
-			drawManager.drawScore(this, state.getScore(0), 0, false);
-		}
+		// Aggregate UI (team score & team lives)
+		drawManager.drawScore(this, state.getScore());
     drawManager.drawLives(this, state.getLivesRemaining(),state.isCoop() );
 		drawManager.drawCoins(this,  state.getCoins()); // ADD THIS LINE - 2P mode: team total
         // 2P mode: setting per-player coin count
